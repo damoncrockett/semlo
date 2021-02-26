@@ -1,0 +1,42 @@
+{
+  "name": "semlo",
+  "version": "1.0.0",
+  "description": "UI for exploring descriptions of photographic papers appearing in Photography Annual and Popular Photography in the 1950s, with connections to the measured physical properties of these papers as they appear in the Lens Media Lab's reference collection.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode production",
+    "start": "webpack serve --hot --mode development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/damoncrockett/semlo.git"
+  },
+  "keywords": [],
+  "author": "Damon Crockett",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/damoncrockett/semlo/issues"
+  },
+  "homepage": "https://github.com/damoncrockett/semlo#readme",
+  "devDependencies": {
+    "buble": "^0.20.0",
+    "buble-loader": "^0.5.1",
+    "css-loader": "^5.1.0",
+    "html-webpack-plugin": "^5.2.0",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.24.2",
+    "webpack-cli": "^4.5.0",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "dependencies": {
+    "d3-array": "^2.11.0",
+    "d3-scale": "^3.2.3",
+    "d3-selection": "^2.0.0",
+    "d3-transition": "^2.0.0",
+    "d3-zoom": "^2.0.0",
+    "lodash": "^4.17.21",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  }
+}
