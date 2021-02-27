@@ -1,5 +1,7 @@
 .DS_Store
 node_modules
+fonts
 src/assets/json/scans
 utils/__pycache__
+utils/.ipynb_checkpoints
 utils/*.ipynb

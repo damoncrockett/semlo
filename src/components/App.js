@@ -23,7 +23,7 @@ class App extends Component {
     }
 
   handleSortVar(e) {
-    const clusterNum = e.target.value
+    const sortVar = e.target.value
     this.setState(state => ({
       sortVar: sortVar
     }));
@@ -61,7 +61,6 @@ class App extends Component {
             <select style={selectStyle} value={this.state.sortVar} onChange={this.handleSortVar}>
               <option value='mentionType'>brand</option>
               <option value='pstatus'>status</option>
-              <option value='manufacturer'>manufacturer</option>
             </select>
           </div>
         </div>

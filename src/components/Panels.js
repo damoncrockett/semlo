@@ -8,11 +8,12 @@ const screenW = window.screen.width * window.devicePixelRatio;
 const marginInt = Math.round( screenW / 45 );
 const margin = {top: marginInt, right: marginInt, bottom: marginInt, left: marginInt};
 const plotW = Math.round( screenW * 0.33 );
-const plotH = plotW * 5;
+const plotH = plotW * 7;
 const svgW = plotW + margin.left + margin.right;
 const svgH = plotH + margin.top + margin.bottom;
 const rectW = Math.round( plotW / 5 );
-const rectH = rectW * 2;
+const rectH = rectW;
+const tduration = 3000;
 
 const pstatusColors = {
   'notp': 'rgba(242,241,239,0.5)', //off white
@@ -48,6 +49,7 @@ class Panels extends Component {
 
     if (prevProps.data !== null && prevProps.data !== this.props.data) {
       this.moveIcons();
+      this.moveText();
     }
   }
 
@@ -73,28 +75,52 @@ class Panels extends Component {
       .data(this.props.data)
       .enter()
       .append('rect')
-      .attr('id', d => d.mentionType )
+      .attr('id', d => 't' + d.idx )
       .attr('width', rectW )
       .attr('height', rectH )
-      .attr('x', d => d.x * rectW )
-      .attr('y', d => d.y * rectH )
-      .attr('fill', 'dodgerblue')
+      .attr('x', d => d.x * ( rectW + 1 ) )
+      .attr('y', d => d.y * ( rectH + 1 ) )
+      .attr('fill', d => pstatusColors[d.pstatus] )
       .on('mouseover', this.handleMouseover )
       .on('mouseout', this.handleMouseout )
+
+    select(svgNode)
+      .select('g.plotCanvas')
+      .selectAll('text')
+      .data(this.props.data)
+      .enter()
+      .append('text')
+      .attr('id', d => 't' + d.idx + '_text' )
+      .attr('x', d => d.x * ( rectW + 1 ) + 10 )
+      .attr('y', d => d.y * ( rectH + 1 ) + 20 )
+      .text(d => d.mentionType)
 
     }
 
   moveIcons() {
     const svgNode = this.svgNode.current;
-    const transitionSettings = transition().duration(this.props.tduration)
+    const transitionSettings = transition().duration(tduration)
 
     select(svgNode)
       .select('g.plotCanvas')
       .selectAll('rect')
       .data(this.props.data)
       .transition(transitionSettings)
-        .attr('x', d => d.x * rectW )
-        .attr('y', d => d.y * rectH )
+        .attr('x', d => d.x * ( rectW + 1 ) )
+        .attr('y', d => d.y * ( rectH + 1 ) )
+  }
+
+  moveText() {
+    const svgNode = this.svgNode.current;
+    const transitionSettings = transition().duration(tduration)
+
+    select(svgNode)
+      .select('g.plotCanvas')
+      .selectAll('text')
+      .data(this.props.data)
+      .transition(transitionSettings)
+        .attr('x', d => d.x * ( rectW + 1 ) + 10 )
+        .attr('y', d => d.y * ( rectH + 1 ) + 20 )
   }
 
   drawText() {
@@ -103,16 +129,14 @@ class Panels extends Component {
 
   // note: 'e' here is the mouse event itself, which we don't need
   handleMouseover(e, d) {
-    select('#' + d.mentionType )
-      .attr('width', rectW * 0.625 )
-      .attr('height', rectH * 0.625 )
+    select('#t' + d.idx )
+      .attr('fill', 'goldenrod')
 
     }
 
   handleMouseout(e, d) {
-    select('#' + d.mentionType )
-      .attr('width', rectW )
-      .attr('height', rectH )
+    select('#t' + d.idx )
+      .attr('fill', d => pstatusColors[d.pstatus] )
 
     }
 
