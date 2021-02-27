@@ -2,3 +2,4 @@
 node_modules
 src/assets/json/scans
 utils/__pycache__
+utils/*.ipynb

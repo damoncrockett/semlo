@@ -7,11 +7,11 @@ import { scaleLinear } from 'd3-scale';
 const screenW = window.screen.width * window.devicePixelRatio;
 const marginInt = Math.round( screenW / 45 );
 const margin = {top: marginInt, right: marginInt, bottom: marginInt, left: marginInt};
-const plotW = Math.round( screenH * 0.67 );
-const plotH = plotW * 3;
+const plotW = Math.round( screenW * 0.33 );
+const plotH = plotW * 5;
 const svgW = plotW + margin.left + margin.right;
 const svgH = plotH + margin.top + margin.bottom;
-const rectW = Math.round( screenH / 120 );
+const rectW = Math.round( plotW / 5 );
 const rectH = rectW * 2;
 
 const pstatusColors = {
@@ -20,14 +20,16 @@ const pstatusColors = {
   'pmeasured': 'rgba(103,128,159,0.5)', //blue
 };
 
-class Scatter extends Component {
+class Panels extends Component {
   constructor(props) {
     super(props);
 
     this.drawSVG = this.drawSVG.bind(this);
     this.drawIcons = this.drawIcons.bind(this);
     this.moveIcons = this.moveIcons.bind(this);
-    this.drawText - this.drawText.bind(this);
+    this.drawText = this.drawText.bind(this);
+    this.handleMouseover = this.handleMouseover.bind(this);
+    this.handleMouseout = this.handleMouseout.bind(this);
     this.svgNode = React.createRef();
   }
 
@@ -71,15 +73,18 @@ class Scatter extends Component {
       .data(this.props.data)
       .enter()
       .append('rect')
-      .attr('id', d => 't' + d.mentionType + '_mentionType')
+      .attr('id', d => d.mentionType )
       .attr('width', rectW )
       .attr('height', rectH )
-      .attr('x', d => d.x * plotW )
-      .attr('y', d => d.y * plotH )
+      .attr('x', d => d.x * rectW )
+      .attr('y', d => d.y * rectH )
+      .attr('fill', 'dodgerblue')
+      .on('mouseover', this.handleMouseover )
+      .on('mouseout', this.handleMouseout )
 
     }
 
-  moveScatter() {
+  moveIcons() {
     const svgNode = this.svgNode.current;
     const transitionSettings = transition().duration(this.props.tduration)
 
@@ -88,24 +93,24 @@ class Scatter extends Component {
       .selectAll('rect')
       .data(this.props.data)
       .transition(transitionSettings)
-        .attr('x', d => d.x * plotW )
-        .attr('y', d => d.y * plotH )
+        .attr('x', d => d.x * rectW )
+        .attr('y', d => d.y * rectH )
   }
 
+  drawText() {
+    return null
+  }
 
   // note: 'e' here is the mouse event itself, which we don't need
   handleMouseover(e, d) {
-    const svgPanel = this.svgPanel.current;
-
-    select('#t' + d.mentionType + '_mentionType')
-      .attr('width', rectW * 1.125 )
-      .attr('height', rectH * 1.125 )
+    select('#' + d.mentionType )
+      .attr('width', rectW * 0.625 )
+      .attr('height', rectH * 0.625 )
 
     }
 
   handleMouseout(e, d) {
-
-    select('#t' + d.mentionType + '_mentionType')
+    select('#' + d.mentionType )
       .attr('width', rectW )
       .attr('height', rectH )
 

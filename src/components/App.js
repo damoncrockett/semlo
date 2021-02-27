@@ -7,7 +7,7 @@ class App extends Component {
 
     this.state = { // global state
       data: null,
-      sortVar: 'pstatus'
+      sortVar: 'mentionType'
     };
 
     this.getData = this.getData.bind(this);
@@ -59,8 +59,9 @@ class App extends Component {
         <div className='controlPanel'>
           <div className='buttonStrip'>
             <select style={selectStyle} value={this.state.sortVar} onChange={this.handleSortVar}>
-              <option value='pstatus'>pstatus</option>
-              <option value='manufacturer'>edition</option>
+              <option value='mentionType'>brand</option>
+              <option value='pstatus'>status</option>
+              <option value='manufacturer'>manufacturer</option>
             </select>
           </div>
         </div>
