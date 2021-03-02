@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css?family=IM+Fell+English');
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
 :root {
   --panel-background: #dddddd;
 	--panel-stroke: #212121;
@@ -12,7 +15,7 @@ path, line, text {
 }
 
 g {
-  font-family: sans-serif;
+  font-family: 'Roboto';
   fill: var(--panel-stroke);
   font-size: 10px;
 }
@@ -20,7 +23,7 @@ g {
 p {
   background-color: rgba(242,241,239,0.8);
   color: var(--panel-stroke);
-  font-family: sans-serif;
+  font-family: 'IM Fell English';
   align: left;
   width: 300px;
   padding: 20px;
