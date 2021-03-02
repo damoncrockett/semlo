@@ -1,9 +1,9 @@
 :root {
-  --panel-background: #212121;
-	--panel-stroke: #dddddd;
+  --panel-background: #dddddd;
+	--panel-stroke: #212121;
 }
 
-body {
+html, body {
 	background-color: var(--panel-background);
 }
 
@@ -17,16 +17,44 @@ g {
   font-size: 10px;
 }
 
+p {
+  background-color: rgba(242,241,239,0.8);
+  color: var(--panel-stroke);
+  font-family: sans-serif;
+  align: left;
+  width: 300px;
+  padding: 20px;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+p:hover {
+  background-color: rgba(114,229,239,0.8);
+}
+
 .iconPanel {
-	float: left;
-	max-width: 600px;
+  float: left;
 }
 
 .textPanel {
-  float: right;
-  margin-left: 0px;
-  max-width: 400px;
+  overflow: hidden; /* trick to make just big enough for the p elements */
 }
+
+.scrollBox {
+  position: fixed;
+  top: 0vh;
+  right: 18vh;
+  overflow-y: auto;
+  height: 100vh; /* scroll box exactly window height */
+  scrollbar-width: none; /* hides scrollbar in Firefox */
+  -ms-overflow-style: none;  /* hides in Internet Explorer 10+ */
+}
+
+.scrollBox::-webkit-scrollbar { /* hides scrollbar in Safari + Chrome */
+    width: 0;
+    height: 0;
+}
+
+/* BUTTONS AND MENUS */
 
 .controlPanel {
   position: fixed;

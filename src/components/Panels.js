@@ -4,21 +4,41 @@ import { transition } from 'd3-transition';
 import { zoom, zoomIdentity, zoomTransform } from 'd3-zoom';
 import { scaleLinear } from 'd3-scale';
 
+const tduration = 3000;
+const highlightColor = 'rgba(114,229,239,0.8)';
+
+/* screen width awareness  */
 const screenW = window.screen.width * window.devicePixelRatio;
 const marginInt = Math.round( screenW / 45 );
-const margin = {top: marginInt, right: marginInt, bottom: marginInt, left: marginInt};
+
+const margin = {
+  top: marginInt,
+  right: marginInt,
+  bottom: marginInt,
+  left: marginInt
+};
+
+/* General code for later
 const plotW = Math.round( screenW * 0.33 );
 const plotH = plotW * 7;
 const svgW = plotW + margin.left + margin.right;
 const svgH = plotH + margin.top + margin.bottom;
-const rectW = Math.round( plotW / 5 );
+const rectW = Math.round( plotW / 7 );
 const rectH = rectW;
-const tduration = 3000;
+*/
+
+// some hard coded geometry for now
+const rectW = 256;
+const rectH = 256;
+const plotW = 1280;
+const plotH = rectW * 34
+const svgW = plotW + margin.left + margin.right;
+const svgH = plotH + margin.top + margin.bottom;
 
 const pstatusColors = {
-  'notp': 'rgba(242,241,239,0.5)', //off white
-  'pnotmeasured': 'rgba(108,122,137,0.5)', //blue grey
-  'pmeasured': 'rgba(103,128,159,0.5)', //blue
+  'notp': 'rgba(242,241,239,0.8)', //off white
+  'pnotmeasured': 'rgba(108,122,137,0.8)', //blue grey
+  'pmeasured': 'rgba(103,128,159,0.8)', //blue
 };
 
 class Panels extends Component {
@@ -83,6 +103,7 @@ class Panels extends Component {
       .attr('fill', d => pstatusColors[d.pstatus] )
       .on('mouseover', this.handleMouseover )
       .on('mouseout', this.handleMouseout )
+      .on('click', this.drawText )
 
     select(svgNode)
       .select('g.plotCanvas')
@@ -123,14 +144,23 @@ class Panels extends Component {
         .attr('y', d => d.y * ( rectH + 1 ) + 20 )
   }
 
-  drawText() {
-    return null
-  }
+  drawText(e, d) {
+    select('div.textPanel')
+      .selectAll('p')
+      .remove()
+
+    select('div.textPanel')
+      .selectAll('p')
+      .data(d['mentions'])
+      .enter()
+      .append('p')
+      .text(d => d)
+    }
 
   // note: 'e' here is the mouse event itself, which we don't need
   handleMouseover(e, d) {
     select('#t' + d.idx )
-      .attr('fill', 'goldenrod')
+      .attr('fill', highlightColor )
 
     }
 
@@ -150,7 +180,9 @@ class Panels extends Component {
           height={svgH}
           />
         </div>
-        <div className='textPanel'>
+        <div className='scrollBox'>
+          <div className='textPanel'>
+          </div>
         </div>
       </div>
     );
