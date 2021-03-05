@@ -17,13 +17,13 @@ path, line, text {
 g {
   font-family: 'Roboto';
   fill: var(--panel-stroke);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 p {
   background-color: rgba(242,241,239,0.8);
   color: var(--panel-stroke);
-  font-family: 'IM Fell English';
+  font-family: 'Roboto';
   align: left;
   width: 300px;
   padding: 20px;
@@ -65,7 +65,7 @@ p:hover {
   right: 10px;
   margin-top: 0px;
   margin-right: 0px;
-	max-width: 200px;
+	max-width: 300px;
 	background-color: var(--panel-background);
 	border-radius: 10px;
 	border-color: var(--panel-stroke);
@@ -81,7 +81,7 @@ p:hover {
 }
 
 button, button:focus, button:active {
-  font-family: sans-serif;
+  font-family: 'Roboto';
   border-color: var(--panel-stroke);
   border-radius: 5px;
   padding: 5px;
@@ -93,7 +93,19 @@ button, button:focus, button:active {
 }
 
 select, select:focus, select:active {
-  font-family: sans-serif;
+  font-family: 'Roboto';
+  border-color: var(--panel-stroke);
+  border-radius: 5px;
+  padding: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  outline: none;
+}
+
+.radSwitch {
+  font-family: 'Roboto';
   border-color: var(--panel-stroke);
   border-radius: 5px;
   padding: 5px;

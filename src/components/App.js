@@ -7,25 +7,33 @@ class App extends Component {
 
     this.state = { // global state
       data: null,
-      sortVar: 'mentionType'
+      sortVar: 'idx',
+      sortOrder: 'a'
     };
 
     this.getData = this.getData.bind(this);
     this.handleSortVar = this.handleSortVar.bind(this);
+    this.handleSortOrder = this.handleSortOrder.bind(this);
   }
 
   getData() {
-    fetch('http://localhost:8888/'+this.state.sortVar+'.json')
+    fetch('http://localhost:8888/_'+this.state.sortVar+'_'+this.state.sortOrder+'.json')
       .then(response => response.json())
-      .then(data => this.setState({
-        data: data,
-      }));
+      .then(data => this.setState({ data: data }))
+      .then(console.log(this.state.data))
     }
 
   handleSortVar(e) {
     const sortVar = e.target.value
     this.setState(state => ({
       sortVar: sortVar
+    }));
+  }
+
+  handleSortOrder(e) {
+    const sortOrder = e.target.value
+    this.setState(state => ({
+      sortOrder: sortOrder
     }));
   }
 
@@ -38,6 +46,9 @@ class App extends Component {
     if (prevState.sortVar !== this.state.sortVar) {
       this.getData();
     }
+    if (prevState.sortOrder !== this.state.sortOrder) {
+      this.getData();
+    }
   }
 
   render() {
@@ -45,8 +56,8 @@ class App extends Component {
     const stroke = '#dddddd';
 
     const selectStyle = {
-      backgroundColor: bkgd,
-      color: stroke
+      backgroundColor: stroke,
+      color: bkgd
     };
 
     return (
@@ -59,9 +70,17 @@ class App extends Component {
         <div className='controlPanel'>
           <div className='buttonStrip'>
             <select style={selectStyle} value={this.state.sortVar} onChange={this.handleSortVar}>
-              <option value='mentionType'>brand</option>
-              <option value='pstatus'>status</option>
+              <option value='idx'>Index</option>
+              <option value='mentionType'>Brand</option>
+              <option value='numMentions'>Frequency</option>
+              <option value='pstatus'>Status</option>
+              <option value='surfaceBadge'>Surface Badge</option>
+              <option value='surfaceName'>Surface Name</option>
             </select>
+            <div className='radSwitch' style={selectStyle} onChange={this.handleSortOrder}>
+              <input type="radio" value="a" name="Sort Order" checked={this.state.sortOrder==='a'}/> ascending
+              <input type="radio" value="d" name="Sort Order" checked={this.state.sortOrder==='d'}/> descending
+            </div>
           </div>
         </div>
       </div>

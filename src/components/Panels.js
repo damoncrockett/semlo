@@ -47,8 +47,9 @@ class Panels extends Component {
 
     this.drawSVG = this.drawSVG.bind(this);
     this.drawIcons = this.drawIcons.bind(this);
-    this.moveIcons = this.moveIcons.bind(this);
-    this.drawText = this.drawText.bind(this);
+    this.moveRects = this.moveRects.bind(this);
+    this.moveText = this.moveText.bind(this);
+    this.drawMentions = this.drawMentions.bind(this);
     this.handleMouseover = this.handleMouseover.bind(this);
     this.handleMouseout = this.handleMouseout.bind(this);
     this.svgNode = React.createRef();
@@ -68,7 +69,7 @@ class Panels extends Component {
     }
 
     if (prevProps.data !== null && prevProps.data !== this.props.data) {
-      this.moveIcons();
+      this.moveRects();
       this.moveText();
     }
   }
@@ -95,7 +96,7 @@ class Panels extends Component {
       .data(this.props.data)
       .enter()
       .append('rect')
-      .attr('id', d => 't' + d.idx )
+      .attr('id', d => 't' + d.idx + '_rect' )
       .attr('width', rectW )
       .attr('height', rectH )
       .attr('x', d => d.x * ( rectW + 1 ) )
@@ -103,25 +104,51 @@ class Panels extends Component {
       .attr('fill', d => pstatusColors[d.pstatus] )
       .on('mouseover', this.handleMouseover )
       .on('mouseout', this.handleMouseout )
-      .on('click', this.drawText )
+      .on('click', this.drawMentions )
 
     select(svgNode)
       .select('g.plotCanvas')
-      .selectAll('text')
+      .selectAll('text.man')
       .data(this.props.data)
       .enter()
       .append('text')
-      .attr('id', d => 't' + d.idx + '_text' )
+      .attr('class', 'man')
+      .attr('id', d => 't' + d.idx + '_man' )
       .attr('x', d => d.x * ( rectW + 1 ) + 10 )
       .attr('y', d => d.y * ( rectH + 1 ) + 20 )
-      .text(d => d.mentionType)
+      .text(d => d.Manufacturer)
+
+    select(svgNode)
+      .select('g.plotCanvas')
+      .selectAll('text.bran')
+      .data(this.props.data)
+      .enter()
+      .append('text')
+      .attr('class', 'bran')
+      .attr('id', d => 't' + d.idx + '_bran' )
+      .attr('x', d => d.x * ( rectW + 1 ) + 10 )
+      .attr('y', d => d.y * ( rectH + 1 ) + 40 )
+      .text(d => d.Brand)
+
+    select(svgNode)
+      .select('g.plotCanvas')
+      .selectAll('text.surf')
+      .data(this.props.data)
+      .enter()
+      .append('text')
+      .attr('class', 'surf')
+      .attr('id', d => 't' + d.idx + '_surf' )
+      .attr('x', d => d.x * ( rectW + 1 ) + 10 )
+      .attr('y', d => d.y * ( rectH + 1 ) + 60 )
+      .text(d => d.surfaceLetter)
 
     }
 
-  moveIcons() {
+  moveRects() {
     const svgNode = this.svgNode.current;
     const transitionSettings = transition().duration(tduration)
 
+    // you have to reset IDs but I'm not exactly sure why
     select(svgNode)
       .select('g.plotCanvas')
       .selectAll('rect')
@@ -137,14 +164,31 @@ class Panels extends Component {
 
     select(svgNode)
       .select('g.plotCanvas')
-      .selectAll('text')
+      .selectAll('text.man')
       .data(this.props.data)
       .transition(transitionSettings)
         .attr('x', d => d.x * ( rectW + 1 ) + 10 )
         .attr('y', d => d.y * ( rectH + 1 ) + 20 )
+
+    select(svgNode)
+      .select('g.plotCanvas')
+      .selectAll('text.bran')
+      .data(this.props.data)
+      .transition(transitionSettings)
+        .attr('x', d => d.x * ( rectW + 1 ) + 10 )
+        .attr('y', d => d.y * ( rectH + 1 ) + 40 )
+
+    select(svgNode)
+      .select('g.plotCanvas')
+      .selectAll('text.surf')
+      .data(this.props.data)
+      .transition(transitionSettings)
+        .attr('x', d => d.x * ( rectW + 1 ) + 10 )
+        .attr('y', d => d.y * ( rectH + 1 ) + 60 )
   }
 
-  drawText(e, d) {
+  drawMentions(e, d) {
+    // removes previous mentions if any
     select('div.textPanel')
       .selectAll('p')
       .remove()
@@ -154,18 +198,19 @@ class Panels extends Component {
       .data(d['mentions'])
       .enter()
       .append('p')
-      .text(d => d)
+      .html(d => "“" + d.words + "”" + "<br/><br/>" + d.citation)
+
     }
 
   // note: 'e' here is the mouse event itself, which we don't need
   handleMouseover(e, d) {
-    select('#t' + d.idx )
+    select('#t' + d.idx + '_rect' )
       .attr('fill', highlightColor )
 
     }
 
   handleMouseout(e, d) {
-    select('#t' + d.idx )
+    select('#t' + d.idx + '_rect' )
       .attr('fill', d => pstatusColors[d.pstatus] )
 
     }
