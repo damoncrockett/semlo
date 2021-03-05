@@ -20,7 +20,6 @@ class App extends Component {
     fetch('http://localhost:8888/_'+this.state.sortVar+'_'+this.state.sortOrder+'.json')
       .then(response => response.json())
       .then(data => this.setState({ data: data }))
-      .then(console.log(this.state.data))
     }
 
   handleSortVar(e) {

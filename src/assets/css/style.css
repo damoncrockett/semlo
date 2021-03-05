@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css?family=IM+Fell+English');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
 :root {
   --panel-background: #dddddd;
-	--panel-stroke: #212121;
+	--panel-stroke: #424242;
 }
 
 html, body {
@@ -16,16 +16,15 @@ path, line, text {
 
 g {
   font-family: 'Roboto';
-  fill: var(--panel-stroke);
   font-size: 12px;
 }
 
 p {
   background-color: rgba(242,241,239,0.8);
   color: var(--panel-stroke);
-  font-family: 'Roboto';
+  font-family: 'Open Sans';
   align: left;
-  width: 300px;
+  width: 400px;
   padding: 20px;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
