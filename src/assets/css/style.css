@@ -30,7 +30,8 @@ p {
 }
 
 p:hover {
-  background-color: rgba(114,229,239,0.8);
+  box-shadow: rgba(0, 0, 0, 0.15) 7.8px 7.8px 2.6px;
+  /*background-color: rgba(114,229,239,0.8);*/
 }
 
 .iconPanel {

@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { select } from 'd3-selection';
 import { transition } from 'd3-transition';
-import { zoom, zoomIdentity, zoomTransform } from 'd3-zoom';
-import { scaleLinear } from 'd3-scale';
 
-const tduration = 1000;
+const tduration = 1200;
 const highlightColor = 'rgba(114,229,239,0.8)';
 
 /* screen width awareness  */
@@ -18,21 +16,12 @@ const margin = {
   left: marginInt
 };
 
-/* General code for later
-const plotW = Math.round( screenW * 0.33 );
-const plotH = plotW * 7;
-const svgW = plotW + margin.left + margin.right;
-const svgH = plotH + margin.top + margin.bottom;
-const rectW = Math.round( plotW / 7 );
-const rectH = rectW;
-*/
-
 // some hard coded geometry for now
 const rectW = 256;
 const rectH = 256;
 const pad = 20;
 const plotW = (rectW + pad) * 5;
-const plotH = (rectW + pad) * 34;
+const plotH = (rectW + pad) * 30;
 const svgW = plotW + margin.left + margin.right;
 const svgH = plotH + margin.top + margin.bottom;
 
@@ -68,9 +57,6 @@ class Panels extends Component {
     this.drawSVG();
   }
 
-  // Probably not how you're supposed to use this function, but it works ---
-  // the conditionals are necessary at least for any functions that set state,
-  // because state changes always trigger componentDidUpdate
   componentDidUpdate(prevProps, prevState) {
     // conditional prevents infinite loop
     if (prevProps.data === null && prevProps.data !== this.props.data) {
@@ -109,6 +95,24 @@ class Panels extends Component {
       .append('feDropShadow')
       .attr('dx', '3.0')
       .attr('dy', '3.0')
+      .attr('stdDeviation', '1.0')
+      .attr('flood-color', 'rgba(0, 0, 0, 0.15)')
+
+    select(svgNode)
+      .selectAll('filter#shadowhover')
+      .data([0]) // bc enter selection, prevents appending new 'pattern' on re-render
+      .enter()
+      .append('filter')
+      .attr('id', 'shadowhover')
+
+    select(svgNode)
+      .select('filter#shadowhover')
+      .selectAll('feDropShadow')
+      .data([0]) // bc enter selection, prevents appending new 'pattern' on re-render
+      .enter()
+      .append('feDropShadow')
+      .attr('dx', '12.0')
+      .attr('dy', '12.0')
       .attr('stdDeviation', '1.0')
       .attr('flood-color', 'rgba(0, 0, 0, 0.15)')
     }
@@ -370,13 +374,16 @@ class Panels extends Component {
   // note: 'e' here is the mouse event itself, which we don't need
   handleMouseover(e, d) {
     select('#t' + d.idx + '_rect' )
-      .attr('fill', highlightColor )
+      .attr('filter', 'url(#shadowhover)')
+
+      //.attr('fill', highlightColor )
 
     }
 
   handleMouseout(e, d) {
     select('#t' + d.idx + '_rect' )
-      .attr('fill', d => pstatusColors[d.pstatus] )
+      .attr('filter', 'url(#shadow)')
+      //.attr('fill', d => pstatusColors[d.pstatus] )
 
     }
 
