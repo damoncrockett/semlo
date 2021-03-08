@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
 @import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css?family=Fascinate');
 
 :root {
   --panel-background: #dddddd;
@@ -8,6 +9,16 @@
 
 html, body {
 	background-color: var(--panel-background);
+}
+
+title {
+  font-family: 'Fascinate';
+  font-size: 32px;
+  position: fixed;
+  left: 110px;
+  top: 40px;
+  display: inline;
+  color: rgba(0, 0, 0, 0.4);
 }
 
 a {
@@ -86,7 +97,7 @@ p.activeGlyph {
 	border-width: 1px;
 	border-style: solid;
   color: var(--panel-stroke);
-  font-family: 'Open Sans';
+  font-family: 'Roboto';
   font-weight: bold;
   align: left;
   width: 175px;
