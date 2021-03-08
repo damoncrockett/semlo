@@ -12,16 +12,9 @@ class App extends Component {
       sortOrder: 'a'
     };
 
-    this.drawTitle = this.drawTitle.bind(this);
     this.getData = this.getData.bind(this);
     this.handleSortVar = this.handleSortVar.bind(this);
     this.handleSortOrder = this.handleSortOrder.bind(this);
-  }
-
-  drawTitle() {
-    select('body')
-      .append('title')
-      .text('the Semantic Loading of Photographic Papers')
   }
 
   getData() {
@@ -45,7 +38,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.drawTitle();
     this.getData();
   }
 

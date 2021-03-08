@@ -50,6 +50,9 @@ class Panels extends Component {
     this.drawIcons = this.drawIcons.bind(this);
     this.moveIcons = this.moveIcons.bind(this);
     this.drawMentions = this.drawMentions.bind(this);
+    this.scrollToActive = this.scrollToActive.bind(this);
+    this.mentionBoxMouseover = this.mentionBoxMouseover.bind(this);
+    this.mentionBoxMouseout = this.mentionBoxMouseout.bind(this);
     this.handleMouseover = this.handleMouseover.bind(this);
     this.handleMouseout = this.handleMouseout.bind(this);
     this.formatCitation = this.formatCitation.bind(this);
@@ -119,6 +122,8 @@ class Panels extends Component {
       .attr('dy', '12.0')
       .attr('stdDeviation', '1.0')
       .attr('flood-color', 'rgba(0, 0, 0, 0.15)')
+
+
     }
 
   polygonPoints(d) {
@@ -360,17 +365,41 @@ class Panels extends Component {
     return "<b><i>"+l[0]+" "+l[1]+"</b></i>"+" "+l.slice(2).join(" ")
   }
 
+  scrollToActive() {
+    const x = select('#t' + this.state.clickID + '_rect').attr('x');
+    const y = select('#t' + this.state.clickID + '_rect').attr('y');
+    window.scrollTo(x,y);
+  }
+
+  // because pure html, cannot use 'attr'
+  mentionBoxMouseover(e, d) {
+    select('#activeGlyph')
+      //.style('color', 'white')
+      .style('border-color', 'white')
+    }
+
+  // because pure html, cannot use 'attr'
+  mentionBoxMouseout(e, d) {
+    select('#activeGlyph')
+      //.style('color', '#424242')
+      .style('border-color', '#424242')
+    }
+
   drawMentions(e, d) {
     // removes previous mention box
     select('div.controlPanel')
-      .select('p.activeGlyph')
+      .select('#activeGlyph')
       .remove()
 
     // mention box
     select('div.controlPanel')
       .append('p')
       .attr('class', 'activeGlyph')
+      .attr('id', 'activeGlyph')
       .text(d.Manufacturer + " " + d.Brand + " " + d.surfaceLetter )
+      .on('mouseover', this.mentionBoxMouseover)
+      .on('mouseout', this.mentionBoxMouseout)
+      .on('click', this.scrollToActive)
 
     select('#t' + this.state.clickID + '_rect')
       .attr('fill', d => pstatusColors[d.pstatus])
@@ -398,16 +427,11 @@ class Panels extends Component {
   handleMouseover(e, d) {
     select('#t' + d.idx + '_rect' )
       .attr('filter', 'url(#shadowhover)')
-
-      //.attr('fill', highlightColor )
-
     }
 
   handleMouseout(e, d) {
     select('#t' + d.idx + '_rect' )
       .attr('filter', 'url(#shadow)')
-      //.attr('fill', d => pstatusColors[d.pstatus] )
-
     }
 
   render() {
