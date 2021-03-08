@@ -10,6 +10,10 @@ html, body {
 	background-color: var(--panel-background);
 }
 
+a {
+  text-decoration: none;
+}
+
 path, line, text {
 	color: var(--panel-stroke);
 }
@@ -31,7 +35,6 @@ p {
 
 p:hover {
   box-shadow: rgba(0, 0, 0, 0.15) 7.8px 7.8px 2.6px;
-  /*background-color: rgba(114,229,239,0.8);*/
 }
 
 .iconPanel {
@@ -72,6 +75,24 @@ p:hover {
 	border-width: 1px;
 	border-style: solid;
   text-align: center; /* for centering buttonStrip */
+}
+
+p.activeGlyph {
+  position: fixed;
+  top: 120px;
+  right: 15px;
+	border-radius: 10px;
+	border-color: var(--panel-stroke);
+	border-width: 1px;
+	border-style: solid;
+  color: var(--panel-stroke);
+  font-family: 'Open Sans';
+  font-weight: bold;
+  align: left;
+  width: 175px;
+  padding: 20px;
+  box-shadow: none;
+  background-color: rgba(114,229,239,0.8);
 }
 
 .buttonStrip {

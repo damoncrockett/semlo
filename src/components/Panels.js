@@ -42,6 +42,10 @@ class Panels extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      clickID: null
+    }
+
     this.drawSVG = this.drawSVG.bind(this);
     this.drawIcons = this.drawIcons.bind(this);
     this.moveIcons = this.moveIcons.bind(this);
@@ -357,18 +361,37 @@ class Panels extends Component {
   }
 
   drawMentions(e, d) {
-    // removes previous mentions if any
-    select('div.textPanel')
-      .selectAll('p')
+    // removes previous mention box
+    select('div.controlPanel')
+      .select('p.activeGlyph')
       .remove()
 
+    // mention box
+    select('div.controlPanel')
+      .append('p')
+      .attr('class', 'activeGlyph')
+      .text(d.Manufacturer + " " + d.Brand + " " + d.surfaceLetter )
+
+    select('#t' + this.state.clickID + '_rect')
+      .attr('fill', d => pstatusColors[d.pstatus])
+
+    this.setState({ clickID: d.idx }, function () {
+      select('#t' + this.state.clickID + '_rect')
+        .attr('fill', highlightColor)
+    })
+
+    // removes previous mentions if any
     select('div.textPanel')
-      .selectAll('p')
+      .selectAll('div')
+      .remove()
+
+    // Is there a cleaner way?
+    select('div.textPanel')
+      .selectAll('div')
       .data(d['mentions'])
       .enter()
-      .append('p')
-      .html(d => "“" + d.words + "”" + "<br/><br/>" + this.formatCitation(d.citation))
-
+      .append('div')
+      .html(d => "<a href=" + d.imgurl +" target='_blank' rel='noopener noreferrer'" +  ">" + "<p>" + "“" + d.words + "”" + "<br/><br/>" + this.formatCitation(d.citation) + "</p></a>")
     }
 
   // note: 'e' here is the mouse event itself, which we don't need
