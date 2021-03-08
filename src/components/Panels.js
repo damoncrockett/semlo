@@ -122,8 +122,6 @@ class Panels extends Component {
       .attr('dy', '12.0')
       .attr('stdDeviation', '1.0')
       .attr('flood-color', 'rgba(0, 0, 0, 0.15)')
-
-
     }
 
   polygonPoints(d) {
