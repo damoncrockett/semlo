@@ -18,7 +18,8 @@ class App extends Component {
   }
 
   getData() {
-    fetch('http://localhost:8888/_'+this.state.sortVar+'_'+this.state.sortOrder+'.json')
+    //fetch('http://localhost:8888/_'+this.state.sortVar+'_'+this.state.sortOrder+'.json')
+    fetch('_'+this.state.sortVar+'_'+this.state.sortOrder+'.json')
       .then(response => response.json())
       .then(data => this.setState({ data: data }))
     }

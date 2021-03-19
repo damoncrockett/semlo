@@ -49,7 +49,7 @@ p:hover {
 .scrollBox {
   position: fixed;
   top: 0vh;
-  right: 18vh;
+  right: 20vh;
   overflow-y: auto;
   height: 100vh; /* scroll box exactly window height */
   scrollbar-width: none; /* hides scrollbar in Firefox */
