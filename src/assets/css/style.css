@@ -29,8 +29,8 @@ p {
   color: var(--panel-stroke);
   font-family: 'Open Sans';
   align: left;
-  width: 400px;
-  padding: 20px;
+  width: 30vw;
+  padding: 8px;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
 
@@ -49,7 +49,7 @@ p:hover {
 .scrollBox {
   position: fixed;
   top: 0vh;
-  right: 20vh;
+  left: 67vw;
   overflow-y: auto;
   height: 100vh; /* scroll box exactly window height */
   scrollbar-width: none; /* hides scrollbar in Firefox */
@@ -65,11 +65,10 @@ p:hover {
 
 .controlPanel {
   position: fixed;
-  top: 10px;
-  right: 10px;
-  margin-top: 0px;
+  left: 1vw;
+  top: 1vh;
   margin-right: 0px;
-	max-width: 300px;
+	max-width: 25vw;
 	background-color: var(--panel-background);
 	border-radius: 10px;
 	border-color: var(--panel-stroke);
@@ -80,8 +79,8 @@ p:hover {
 
 p.activeGlyph {
   position: fixed;
-  top: 120px;
-  right: 15px;
+  top: 1vw;
+  left: 20vw;
 	border-radius: 10px;
 	border-color: var(--panel-stroke);
 	border-width: 1px;
@@ -90,8 +89,8 @@ p.activeGlyph {
   font-family: 'Roboto';
   font-weight: bold;
   align: left;
-  width: 175px;
-  padding: 20px;
+  width: 10vw;
+  padding: 8px;
   box-shadow: none;
   background-color: rgba(114,229,239,0.8);
 }
@@ -106,11 +105,11 @@ button, button:focus, button:active {
   font-family: 'Roboto';
   border-color: var(--panel-stroke);
   border-radius: 5px;
-  padding: 5px;
-  margin-left: 5px;
-  margin-right: 5px;
-  margin-top: 5px;
-  margin-bottom: 5px;
+  padding: 2px;
+  margin-left: 2px;
+  margin-right: 2px;
+  margin-top: 2px;
+  margin-bottom: 2px;
   outline: none;
 }
 
@@ -118,11 +117,11 @@ select, select:focus, select:active {
   font-family: 'Roboto';
   border-color: var(--panel-stroke);
   border-radius: 5px;
-  padding: 5px;
-  margin-left: 5px;
-  margin-right: 5px;
-  margin-top: 5px;
-  margin-bottom: 5px;
+  padding: 2px;
+  margin-left: 2px;
+  margin-right: 2px;
+  margin-top: 2px;
+  margin-bottom: 2px;
   outline: none;
 }
 
@@ -130,11 +129,11 @@ select, select:focus, select:active {
   font-family: 'Roboto';
   border-color: var(--panel-stroke);
   border-radius: 5px;
-  padding: 5px;
-  margin-left: 5px;
-  margin-right: 5px;
-  margin-top: 5px;
-  margin-bottom: 5px;
+  padding: 2px;
+  margin-left: 2px;
+  margin-right: 2px;
+  margin-top: 2px;
+  margin-bottom: 2px;
   outline: none;
 }
 

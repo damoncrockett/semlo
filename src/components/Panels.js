@@ -6,20 +6,24 @@ const tduration = 1200;
 const highlightColor = 'rgba(114,229,239,0.8)';
 
 /* screen width awareness  */
-const screenW = window.screen.width * window.devicePixelRatio;
-const marginInt = Math.round( screenW / 45 );
+//const screenW = window.screen.width * window.devicePixelRatio;
+
+const innerW = window.innerWidth
+console.log(window.innerWidth);
+const marginInt = innerW * 0.1;
 
 const margin = {
   top: marginInt,
-  right: marginInt,
-  bottom: marginInt,
-  left: marginInt
+  right: 0,
+  bottom: 0,
+  left: 0
 };
 
-// some hard coded geometry for now
-const rectW = 256;
-const rectH = 256;
-const pad = 20;
+// (rectW + pad) * 5 ~ 2/3 of innerW or less
+const pad = innerW * 0.0067;
+const rectW = innerW * 0.65 / 5 - pad;
+const rectH = rectW;
+
 const plotW = (rectW + pad) * 5;
 const plotH = (rectW + pad) * 30;
 const svgW = plotW + margin.left + margin.right;
@@ -129,12 +133,12 @@ class Panels extends Component {
     const y = d.y * ( rectW + pad );
 
     const p1x = x + rectW / 2;
-    const p1y = y + 75;
-    const p2x = x + 75;
+    const p1y = y + rectW * 0.3;
+    const p2x = x + rectW * 0.3;
     const p2y = y + rectH / 2;
     const p3x = x + rectW / 2;
-    const p3y = y + rectH - 75;
-    const p4x = x + rectW - 75;
+    const p3y = y + rectH - rectW * 0.3;
+    const p4x = x + rectW - rectW * 0.3;
     const p4y = y + rectH / 2;
 
     const s = p1x.toString()+','+p1y.toString()+' '+p2x.toString()+','+p2y.toString()+' '+p3x.toString()+','+p3y.toString()+' '+p4x.toString()+','+p4y.toString();
@@ -172,8 +176,8 @@ class Panels extends Component {
       .append('text')
       .attr('class', 'man')
       .attr('id', d => 't' + d.idx + '_man' )
-      .attr('x', d => d.x * ( rectW + pad ) + 10 )
-      .attr('y', d => d.y * ( rectH + pad ) + 30 )
+      .attr('x', d => d.x * ( rectW + pad ) + rectW * 0.04 )
+      .attr('y', d => d.y * ( rectH + pad ) + rectW * 0.12 )
       .text(d => d.Manufacturer)
       .attr('font-weight', 'bold')
       .attr('font-size', '16px')
@@ -187,8 +191,8 @@ class Panels extends Component {
       .append('text')
       .attr('class', 'bran')
       .attr('id', d => 't' + d.idx + '_bran' )
-      .attr('x', d => d.x * ( rectW + pad ) + 10 )
-      .attr('y', d => d.y * ( rectH + pad ) + 50 )
+      .attr('x', d => d.x * ( rectW + pad ) + rectW * 0.04 )
+      .attr('y', d => d.y * ( rectH + pad ) + rectW * 0.2 )
       .text(d => d.Brand)
       .attr('fill', d => pstatusTextColors[d.pstatus])
 
@@ -200,8 +204,8 @@ class Panels extends Component {
       .append('text')
       .attr('class', 'surf')
       .attr('id', d => 't' + d.idx + '_surf' )
-      .attr('x', d => d.x * ( rectW + pad ) + 10 )
-      .attr('y', d => d.y * ( rectH + pad ) + 70 )
+      .attr('x', d => d.x * ( rectW + pad ) + rectW * 0.04 )
+      .attr('y', d => d.y * ( rectH + pad ) + rectW * 0.27 )
       .text(d => d.surfaceLetter)
       .attr('fill', d => pstatusTextColors[d.pstatus])
 
@@ -213,8 +217,8 @@ class Panels extends Component {
       .append('text')
       .attr('class', 'badge')
       .attr('id', d => 't' + d.idx + '_badge' )
-      .attr('x', d => d.x * ( rectW + pad ) + 210 )
-      .attr('y', d => d.y * ( rectH + pad ) + 50 )
+      .attr('x', d => d.x * ( rectW + pad ) + rectW * 0.82 )
+      .attr('y', d => d.y * ( rectH + pad ) + rectW * 0.2 )
       .text(d => d.surfaceBadge ? "√" : '')
       .attr('fill', d => pstatusTextColors[d.pstatus])
       .attr('font-weight', 'bold')
@@ -228,11 +232,11 @@ class Panels extends Component {
       .append('text')
       .attr('class', 'freqticks')
       .attr('id', d => 't' + d.idx + '_freqticks' )
-      .attr('x', d => d.x * ( rectW + pad ) + 10 )
-      .attr('y', d => d.y * ( rectH + pad ) + rectH - 15 )
+      .attr('x', d => d.x * ( rectW + pad ) + rectW * 0.04 )
+      .attr('y', d => d.y * ( rectH + pad ) + rectH - rectW * 0.06 )
       .text(d => '| '.repeat(d.numMentions))
       .attr('fill', d => pstatusTextColors[d.pstatus])
-      .attr('font-size', '18px')
+      .attr('font-size', '12px')
 
     select(svgNode)
       .select('g.plotCanvas')
@@ -243,9 +247,9 @@ class Panels extends Component {
       .attr('class', 'xaxis')
       .attr('id', d => 't' + d.idx + '_xaxis' )
       .attr('x1', d => d.x * ( rectW + pad ) + rectW / 2 )
-      .attr('y1', d => d.y * ( rectH + pad ) + 50 )
+      .attr('y1', d => d.y * ( rectH + pad ) + rectW * 0.2 )
       .attr('x2', d => d.x * ( rectW + pad ) + rectW / 2 )
-      .attr('y2', d => d.y * ( rectH + pad ) + rectH - 50 )
+      .attr('y2', d => d.y * ( rectH + pad ) + rectH - rectW * 0.2 )
       .attr('stroke', d => pstatusTextColors[d.pstatus])
 
     select(svgNode)
@@ -256,9 +260,9 @@ class Panels extends Component {
       .append('line')
       .attr('class', 'yaxis')
       .attr('id', d => 't' + d.idx + '_yaxis' )
-      .attr('x1', d => d.x * ( rectW + pad ) + 50 )
+      .attr('x1', d => d.x * ( rectW + pad ) + rectW * 0.2 )
       .attr('y1', d => d.y * ( rectH + pad ) + rectH / 2 )
-      .attr('x2', d => d.x * ( rectW + pad ) + rectW - 50 )
+      .attr('x2', d => d.x * ( rectW + pad ) + rectW - rectW * 0.2 )
       .attr('y2', d => d.y * ( rectH + pad ) + rectH / 2 )
       .attr('stroke', d => pstatusTextColors[d.pstatus])
 
@@ -294,40 +298,40 @@ class Panels extends Component {
       .selectAll('text.man')
       .data(this.props.data)
       .transition(transitionSettings)
-        .attr('x', d => d.x * ( rectW + pad ) + 10 )
-        .attr('y', d => d.y * ( rectH + pad ) + 30 )
+        .attr('x', d => d.x * ( rectW + pad ) + rectW * 0.04 )
+        .attr('y', d => d.y * ( rectH + pad ) + rectW * 0.12 )
 
     select(svgNode)
       .select('g.plotCanvas')
       .selectAll('text.bran')
       .data(this.props.data)
       .transition(transitionSettings)
-        .attr('x', d => d.x * ( rectW + pad ) + 10 )
-        .attr('y', d => d.y * ( rectH + pad ) + 50 )
+        .attr('x', d => d.x * ( rectW + pad ) + rectW * 0.04 )
+        .attr('y', d => d.y * ( rectH + pad ) + rectW * 0.2 )
 
     select(svgNode)
       .select('g.plotCanvas')
       .selectAll('text.surf')
       .data(this.props.data)
       .transition(transitionSettings)
-        .attr('x', d => d.x * ( rectW + pad ) + 10 )
-        .attr('y', d => d.y * ( rectH + pad ) + 70 )
+        .attr('x', d => d.x * ( rectW + pad ) + rectW * 0.04 )
+        .attr('y', d => d.y * ( rectH + pad ) + rectW * 0.27 )
 
     select(svgNode)
       .select('g.plotCanvas')
       .selectAll('text.badge')
       .data(this.props.data)
       .transition(transitionSettings)
-        .attr('x', d => d.x * ( rectW + pad ) + 210 )
-        .attr('y', d => d.y * ( rectH + pad ) + 50 )
+        .attr('x', d => d.x * ( rectW + pad ) + rectW * 0.82 )
+        .attr('y', d => d.y * ( rectH + pad ) + rectW * 0.2 )
 
     select(svgNode)
       .select('g.plotCanvas')
       .selectAll('text.freqticks')
       .data(this.props.data)
       .transition(transitionSettings)
-        .attr('x', d => d.x * ( rectW + pad ) + 10 )
-        .attr('y', d => d.y * ( rectH + pad ) + rectH - 15 )
+        .attr('x', d => d.x * ( rectW + pad ) + rectW * 0.04 )
+        .attr('y', d => d.y * ( rectH + pad ) + rectH - rectW * 0.06 )
 
     select(svgNode)
       .select('g.plotCanvas')
@@ -335,18 +339,18 @@ class Panels extends Component {
       .data(this.props.data)
       .transition(transitionSettings)
         .attr('x1', d => d.x * ( rectW + pad ) + rectW / 2 )
-        .attr('y1', d => d.y * ( rectH + pad ) + 50 )
+        .attr('y1', d => d.y * ( rectH + pad ) + rectW * 0.2 )
         .attr('x2', d => d.x * ( rectW + pad ) + rectW / 2 )
-        .attr('y2', d => d.y * ( rectH + pad ) + rectH - 50 )
+        .attr('y2', d => d.y * ( rectH + pad ) + rectH - rectW * 0.2 )
 
     select(svgNode)
       .select('g.plotCanvas')
       .selectAll('line.yaxis')
       .data(this.props.data)
       .transition(transitionSettings)
-        .attr('x1', d => d.x * ( rectW + pad ) + 50 )
+        .attr('x1', d => d.x * ( rectW + pad ) + rectW * 0.2 )
         .attr('y1', d => d.y * ( rectH + pad ) + rectH / 2 )
-        .attr('x2', d => d.x * ( rectW + pad ) + rectW - 50 )
+        .attr('x2', d => d.x * ( rectW + pad ) + rectW - rectW * 0.2 )
         .attr('y2', d => d.y * ( rectH + pad ) + rectH / 2 )
 
     select(svgNode)
