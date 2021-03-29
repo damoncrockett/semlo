@@ -99,6 +99,8 @@ class Panels extends Component {
     this.mentionBoxMouseout = this.mentionBoxMouseout.bind(this);
     this.handleMouseover = this.handleMouseover.bind(this);
     this.handleMouseout = this.handleMouseout.bind(this);
+    this.dotMouseover = this.dotMouseover.bind(this);
+    this.dotMouseout = this.dotMouseout.bind(this);
     this.formatCitation = this.formatCitation.bind(this);
     this.zeroPoint = this.zeroPoint.bind(this);
     this.glyphOrigin = this.glyphOrigin.bind(this);
@@ -220,7 +222,7 @@ class Panels extends Component {
     if (this.props.jitter===false) {
       return this.glyphOrigin(coord)
     } else if (this.props.jitter===true) {
-      return this.glyphOrigin(coord) + Math.random() * ( Math.round( Math.random() ) ? 1 : -1 ) * pad * 2
+      return this.glyphOrigin(coord) + Math.random() * ( Math.round( Math.random() ) ? 1 : -1 ) * pad
     }
   }
 
@@ -286,6 +288,23 @@ class Panels extends Component {
         return pGlossScaleQ(d.valqp)
       }
     }
+  }
+
+  dotMouseover(e, d) {
+    console.log(d.pm); 
+
+    select('div.controlPanel')
+      .append('p')
+      .attr('id', 'detail')
+      .attr('class', 'detail')
+      .text(d.pm + " " + d.year + " " + d.glossword + " " + d.textureword + " " + d.weightword )
+  }
+
+  dotMouseout(e, d) {
+    select('div.controlPanel')
+      .select('#detail')
+      .remove()
+
   }
 
   drawIcons() {
@@ -426,6 +445,8 @@ class Panels extends Component {
       .attr('cx', d => this.jitter(d.x)  )
       .attr('cy', d => this.glyphOrigin(d.y) + this.colorScale(d) )
       .attr('r', dotSize)
+      .on('mouseover', this.dotMouseover)
+      .on('mouseover', this.dotMouseout)
 
     let texturePoints = this.props.data.filter(d => d.texture !== "");
     texturePoints = texturePoints.map(d => d.texture);
@@ -443,6 +464,8 @@ class Panels extends Component {
       .attr('cx', d => this.jitter(d.x) )
       .attr('cy', d => this.glyphOrigin(d.y) - this.textureScale(d) )
       .attr('r', dotSize)
+      .on('mouseover', this.dotMouseover)
+      .on('mouseover', this.dotMouseout)
 
     let thicknessPoints = this.props.data.filter(d => d.thickness !== "");
     thicknessPoints = thicknessPoints.map(d => d.thickness);
@@ -460,6 +483,8 @@ class Panels extends Component {
       .attr('cx', d => this.glyphOrigin(d.x) - this.thicknessScale(d) )
       .attr('cy', d => this.jitter(d.y) )
       .attr('r', dotSize)
+      .on('mouseover', this.dotMouseover)
+      .on('mouseover', this.dotMouseout)
 
     let glossPoints = this.props.data.filter(d => d.gloss !== "");
     glossPoints = glossPoints.map(d => d.gloss);
@@ -477,6 +502,8 @@ class Panels extends Component {
       .attr('cx', d => this.glyphOrigin(d.x) + this.glossScale(d) )
       .attr('cy', d => this.jitter(d.y) )
       .attr('r', dotSize)
+      .on('mouseover', this.dotMouseover)
+      .on('mouseover', this.dotMouseout)
 
 /*
     select(svgNode)
