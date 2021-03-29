@@ -69,6 +69,7 @@ p:hover {
   top: 1vh;
   margin-right: 0px;
 	max-width: 25vw;
+  padding: 8px;
 	background-color: var(--panel-background);
 	border-radius: 10px;
 	border-color: var(--panel-stroke);

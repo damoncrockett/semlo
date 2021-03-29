@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { select } from 'd3-selection';
 import { transition } from 'd3-transition';
-import { scaleLinear } from 'd3-scale';
+import { scaleLinear, scaleQuantile } from 'd3-scale';
+import { ticks } from 'd3-array'
 import flattenDeep from 'lodash/flattenDeep';
 
 const tduration = 1200;
@@ -71,6 +72,16 @@ const sTextureScale = scaleLinear().domain([sTextureMin,sTextureMax]).range([0,r
 const sThicknessScale = scaleLinear().domain([sThicknessMin,sThicknessMax]).range([0,rectW * 0.3]);
 const sGlossScale = scaleLinear().domain([sGlossMin,sGlossMax]).range([0,rectW * 0.3]);
 
+const pColorScaleQ = scaleLinear().domain([0,100]).range([0,rectW * 0.3]);
+const pTextureScaleQ = scaleLinear().domain([0,100]).range([0,rectW * 0.3]);
+const pThicknessScaleQ = scaleLinear().domain([0,100]).range([0,rectW * 0.3]);
+const pGlossScaleQ = scaleLinear().domain([0,100]).range([0,rectW * 0.3]);
+
+const sColorScaleQ = scaleLinear().domain([0,100]).range([0,rectW * 0.3]);
+const sTextureScaleQ = scaleLinear().domain([0,100]).range([0,rectW * 0.3]);
+const sThicknessScaleQ = scaleLinear().domain([0,100]).range([0,rectW * 0.3]);
+const sGlossScaleQ = scaleLinear().domain([0,100]).range([0,rectW * 0.3]);
+
 class Panels extends Component {
   constructor(props) {
     super(props);
@@ -95,6 +106,7 @@ class Panels extends Component {
     this.textureScale = this.textureScale.bind(this);
     this.thicknessScale = this.thicknessScale.bind(this);
     this.glossScale = this.glossScale.bind(this);
+    this.jitter = this.jitter.bind(this);
     //this.polygonPoints = this.polygonPoints.bind(this);
     this.svgNode = React.createRef();
   }
@@ -114,6 +126,14 @@ class Panels extends Component {
     }
 
     if (prevProps.universe !== this.props.universe) {
+      this.moveIcons();
+    }
+
+    if (prevProps.dotScale !== this.props.dotScale) {
+      this.moveIcons();
+    }
+
+    if (prevProps.jitter !== this.props.jitter) {
       this.moveIcons();
     }
   }
@@ -196,35 +216,75 @@ class Panels extends Component {
     return this.zeroPoint(coord) + rectW / 2
   }
 
-  colorScale(val) {
-    if (this.props.universe==='semlo') {
-      return sColorScale(val)
-    } else if (this.props.universe==='phenome') {
-      return pColorScale(val)
+  jitter(coord) {
+    if (this.props.jitter===false) {
+      return this.glyphOrigin(coord)
+    } else if (this.props.jitter===true) {
+      return this.glyphOrigin(coord) + Math.random() * ( Math.round( Math.random() ) ? 1 : -1 ) * pad
     }
   }
 
-  textureScale(val) {
+  colorScale(d) {
     if (this.props.universe==='semlo') {
-      return sTextureScale(val)
+      if (this.props.dotScale==='linear') {
+        return sColorScale(d.val)
+      } else if (this.props.dotScale==='quantile') {
+        return sColorScaleQ(d.valqs)
+      }
     } else if (this.props.universe==='phenome') {
-      return pTextureScale(val)
+      if (this.props.dotScale==='linear') {
+        return pColorScale(d.val)
+      } else if (this.props.dotScale==='quantile') {
+        return pColorScaleQ(d.valqp)
+      }
     }
   }
 
-  thicknessScale(val) {
+  textureScale(d) {
     if (this.props.universe==='semlo') {
-      return sThicknessScale(val)
+      if (this.props.dotScale==='linear') {
+        return sTextureScale(d.val)
+      } else if (this.props.dotScale==='quantile') {
+        return sTextureScaleQ(d.valqs)
+      }
     } else if (this.props.universe==='phenome') {
-      return pThicknessScale(val)
+      if (this.props.dotScale==='linear') {
+        return pTextureScale(d.val)
+      } else if (this.props.dotScale==='quantile') {
+        return pTextureScaleQ(d.valqp)
+      }
     }
   }
 
-  glossScale(val) {
+  thicknessScale(d) {
     if (this.props.universe==='semlo') {
-      return sGlossScale(val)
+      if (this.props.dotScale==='linear') {
+        return sThicknessScale(d.val)
+      } else if (this.props.dotScale==='quantile') {
+        return sThicknessScaleQ(d.valqs)
+      }
     } else if (this.props.universe==='phenome') {
-      return pGlossScale(val)
+      if (this.props.dotScale==='linear') {
+        return pThicknessScale(d.val)
+      } else if (this.props.dotScale==='quantile') {
+        return pThicknessScaleQ(d.valqp)
+      }
+    }
+  }
+
+  glossScale(d) {
+    if (this.props.universe==='semlo') {
+      if (this.props.dotScale==='linear') {
+        return sGlossScale(d.val)
+      } else if (this.props.dotScale==='quantile') {
+        return sGlossScaleQ(d.valqs)
+      }
+    } else if (this.props.universe==='phenome') {
+      if (this.props.dotScale==='linear') {
+        return pGlossScale(d.valval)
+      } else if (this.props.dotScale==='quantile') {
+        return pGlossScaleQ(d.valqp)
+      }
     }
   }
 
@@ -363,8 +423,8 @@ class Panels extends Component {
       .attr('class', 'colorPoint')
       .attr('stroke','none')
       .attr('fill','rgba(255,255,255,0.25)')
-      .attr('cx', d => this.glyphOrigin(d.x)  )
-      .attr('cy', d => this.glyphOrigin(d.y) + this.colorScale(d.val) )
+      .attr('cx', d => this.jitter(d.x)  )
+      .attr('cy', d => this.glyphOrigin(d.y) + this.colorScale(d) )
       .attr('r', dotSize)
 
     let texturePoints = this.props.data.filter(d => d.texture !== "");
@@ -380,8 +440,8 @@ class Panels extends Component {
       .attr('class', 'texturePoint')
       .attr('stroke','none')
       .attr('fill','rgba(255,255,255,0.25)')
-      .attr('cx', d => this.glyphOrigin(d.x) )
-      .attr('cy', d => this.glyphOrigin(d.y) - this.textureScale(d.val) )
+      .attr('cx', d => this.jitter(d.x) )
+      .attr('cy', d => this.glyphOrigin(d.y) - this.textureScale(d) )
       .attr('r', dotSize)
 
     let thicknessPoints = this.props.data.filter(d => d.thickness !== "");
@@ -397,8 +457,8 @@ class Panels extends Component {
       .attr('class', 'thicknessPoint')
       .attr('stroke','none')
       .attr('fill','rgba(255,255,255,0.25)')
-      .attr('cx', d => this.glyphOrigin(d.x) - this.thicknessScale(d.val) )
-      .attr('cy', d => this.glyphOrigin(d.y) )
+      .attr('cx', d => this.glyphOrigin(d.x) - this.thicknessScale(d) )
+      .attr('cy', d => this.jitter(d.y) )
       .attr('r', dotSize)
 
     let glossPoints = this.props.data.filter(d => d.gloss !== "");
@@ -414,8 +474,8 @@ class Panels extends Component {
       .attr('class', 'glossPoint')
       .attr('stroke','none')
       .attr('fill','rgba(255,255,255,0.25)')
-      .attr('cx', d => this.glyphOrigin(d.x) + this.glossScale(d.val) )
-      .attr('cy', d => this.glyphOrigin(d.y) )
+      .attr('cx', d => this.glyphOrigin(d.x) + this.glossScale(d) )
+      .attr('cy', d => this.jitter(d.y) )
       .attr('r', dotSize)
 
 /*
@@ -528,8 +588,8 @@ class Panels extends Component {
       .selectAll('circle.colorPoint')
       .data(colorPoints)
       .transition(transitionSettings)
-        .attr('cx', d => this.glyphOrigin(d.x) )
-        .attr('cy', d => this.glyphOrigin(d.y) + this.colorScale(d.val) )
+        .attr('cx', d => this.jitter(d.x) )
+        .attr('cy', d => this.glyphOrigin(d.y) + this.colorScale(d) )
 
     let texturePoints = this.props.data.filter(d => d.texture !== "");
     texturePoints = texturePoints.map(d => d.texture);
@@ -540,8 +600,8 @@ class Panels extends Component {
       .selectAll('circle.texturePoint')
       .data(texturePoints)
       .transition(transitionSettings)
-        .attr('cx', d => this.glyphOrigin(d.x) )
-        .attr('cy', d => this.glyphOrigin(d.y) - this.textureScale(d.val) )
+        .attr('cx', d => this.jitter(d.x) )
+        .attr('cy', d => this.glyphOrigin(d.y) - this.textureScale(d) )
 
     let thicknessPoints = this.props.data.filter(d => d.thickness !== "");
     thicknessPoints = thicknessPoints.map(d => d.thickness);
@@ -552,8 +612,8 @@ class Panels extends Component {
       .selectAll('circle.thicknessPoint')
       .data(thicknessPoints)
       .transition(transitionSettings)
-        .attr('cx', d => this.glyphOrigin(d.x) - this.thicknessScale(d.val) )
-        .attr('cy', d => this.glyphOrigin(d.y) )
+        .attr('cx', d => this.glyphOrigin(d.x) - this.thicknessScale(d) )
+        .attr('cy', d => this.jitter(d.y) )
 
 
     let glossPoints = this.props.data.filter(d => d.gloss !== "");
@@ -565,8 +625,8 @@ class Panels extends Component {
       .selectAll('circle.glossPoint')
       .data(glossPoints)
       .transition(transitionSettings)
-        .attr('cx', d => this.glyphOrigin(d.x) + this.glossScale(d.val) )
-        .attr('cy', d => this.glyphOrigin(d.y) )
+        .attr('cx', d => this.glyphOrigin(d.x) + this.glossScale(d) )
+        .attr('cy', d => this.jitter(d.y) )
 
   }
 
