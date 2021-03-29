@@ -291,16 +291,17 @@ class Panels extends Component {
   }
 
   dotMouseover(e, d) {
-    console.log(d.pm); 
 
     select('div.controlPanel')
       .append('p')
       .attr('id', 'detail')
       .attr('class', 'detail')
       .text(d.pm + " " + d.year + " " + d.glossword + " " + d.textureword + " " + d.weightword )
+
   }
 
   dotMouseout(e, d) {
+
     select('div.controlPanel')
       .select('#detail')
       .remove()
@@ -446,7 +447,7 @@ class Panels extends Component {
       .attr('cy', d => this.glyphOrigin(d.y) + this.colorScale(d) )
       .attr('r', dotSize)
       .on('mouseover', this.dotMouseover)
-      .on('mouseover', this.dotMouseout)
+      .on('mouseout', this.dotMouseout)
 
     let texturePoints = this.props.data.filter(d => d.texture !== "");
     texturePoints = texturePoints.map(d => d.texture);
@@ -465,7 +466,7 @@ class Panels extends Component {
       .attr('cy', d => this.glyphOrigin(d.y) - this.textureScale(d) )
       .attr('r', dotSize)
       .on('mouseover', this.dotMouseover)
-      .on('mouseover', this.dotMouseout)
+      .on('mouseout', this.dotMouseout)
 
     let thicknessPoints = this.props.data.filter(d => d.thickness !== "");
     thicknessPoints = thicknessPoints.map(d => d.thickness);
@@ -484,7 +485,7 @@ class Panels extends Component {
       .attr('cy', d => this.jitter(d.y) )
       .attr('r', dotSize)
       .on('mouseover', this.dotMouseover)
-      .on('mouseover', this.dotMouseout)
+      .on('mouseout', this.dotMouseout)
 
     let glossPoints = this.props.data.filter(d => d.gloss !== "");
     glossPoints = glossPoints.map(d => d.gloss);
@@ -503,7 +504,7 @@ class Panels extends Component {
       .attr('cy', d => this.jitter(d.y) )
       .attr('r', dotSize)
       .on('mouseover', this.dotMouseover)
-      .on('mouseover', this.dotMouseout)
+      .on('mouseout', this.dotMouseout)
 
 /*
     select(svgNode)
