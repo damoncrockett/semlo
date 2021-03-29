@@ -104,8 +104,10 @@ p.activeGlyph {
 button, button:focus, button:active {
   font-family: 'Roboto';
   border-color: var(--panel-stroke);
-  border-radius: 5px;
-  padding: 2px;
+  border-radius: 10px;
+  border-width: 1px;
+  border-style: solid;
+  padding: 6px;
   margin-left: 2px;
   margin-right: 2px;
   margin-top: 2px;
@@ -138,6 +140,6 @@ select, select:focus, select:active {
 }
 
 button:hover {
-  border-color: hsl(0, 0%, 0%);
-  color: hsl(0, 0%, 0%) !important;
+  border-color: #ffffff;
+  color: #ffffff !important;
 }

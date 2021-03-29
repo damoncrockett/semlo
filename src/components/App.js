@@ -9,12 +9,17 @@ class App extends Component {
     this.state = { // global state
       data: null,
       sortVar: 'idx',
-      sortOrder: 'a'
+      sortOrder: 'a',
+      phenomeUni: false,
+      semloUni: true,
+      universe: 'semlo'
     };
 
     this.getData = this.getData.bind(this);
     this.handleSortVar = this.handleSortVar.bind(this);
     this.handleSortOrder = this.handleSortOrder.bind(this);
+    this.handlePhenomeUni = this.handlePhenomeUni.bind(this);
+    this.handleSemLoUni = this.handleSemLoUni.bind(this);
   }
 
   getData() {
@@ -38,6 +43,14 @@ class App extends Component {
     }));
   }
 
+  handlePhenomeUni() {
+    this.setState({ phenomeUni: true, semloUni: false, universe: 'phenome' });
+  }
+
+  handleSemLoUni() {
+    this.setState({ phenomeUni: false, semloUni: true, universe: 'semlo' });
+  }
+
   componentDidMount() {
     this.getData();
   }
@@ -53,12 +66,22 @@ class App extends Component {
   }
 
   render() {
-    const bkgd = '#212121';
-    const stroke = '#dddddd';
+    const stroke = '#424242'; // dark
+    const bkgd = '#dddddd'; // light
 
     const selectStyle = {
-      backgroundColor: stroke,
-      color: bkgd
+      backgroundColor: bkgd,
+      color: stroke
+    };
+
+    const phenomeStyle = {
+      backgroundColor: this.state.phenomeUni ? stroke : bkgd,
+      color: this.state.phenomeUni ? bkgd : stroke
+    };
+
+    const semloStyle = {
+      backgroundColor: this.state.semloUni ? stroke : bkgd,
+      color: this.state.semloUni ? bkgd : stroke
     };
 
     return (
@@ -66,6 +89,7 @@ class App extends Component {
         <div className='field'>
           <Panels
             data={this.state.data}
+            universe={this.state.universe}
           />
         </div>
         <div className='controlPanel'>
@@ -82,6 +106,10 @@ class App extends Component {
               <input type="radio" value="a" name="Sort Order" checked={this.state.sortOrder==='a'}/> ascending
               <input type="radio" value="d" name="Sort Order" checked={this.state.sortOrder==='d'}/> descending
             </div>
+          <div className='buttonStrip'>
+            <button onClick={this.handleSemLoUni} style={semloStyle}>LOCAL</button>
+            <button onClick={this.handlePhenomeUni} style={phenomeStyle}>UNIVERSAL</button>
+          </div>
           </div>
         </div>
       </div>
