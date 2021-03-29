@@ -220,7 +220,7 @@ class Panels extends Component {
     if (this.props.jitter===false) {
       return this.glyphOrigin(coord)
     } else if (this.props.jitter===true) {
-      return this.glyphOrigin(coord) + Math.random() * ( Math.round( Math.random() ) ? 1 : -1 ) * pad
+      return this.glyphOrigin(coord) + Math.random() * ( Math.round( Math.random() ) ? 1 : -1 ) * pad * 2
     }
   }
 
