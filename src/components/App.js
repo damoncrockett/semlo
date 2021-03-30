@@ -150,7 +150,7 @@ class App extends Component {
           </div>
           <div className='buttonStrip'>
             <button onClick={this.handleLinear} style={linearStyle}>LINEAR</button>
-            <button onClick={this.handleQuantile} style={quantileStyle}>QUANTILE</button>
+            <button onClick={this.handleQuantile} style={quantileStyle}>RANKED</button>
           </div>
           <div className='buttonStrip'>
             <button onClick={this.handleJitter} style={jitterStyle}>JITTER</button>

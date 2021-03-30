@@ -292,11 +292,13 @@ class Panels extends Component {
 
   dotMouseover(e, d) {
 
+    const dotType = e.target.className.baseVal;
+
     select('div.controlPanel')
       .append('p')
       .attr('id', 'detail')
       .attr('class', 'detail')
-      .text(d.pm + " " + d.year + " " + d.glossword + " " + d.textureword + " " + d.weightword )
+      .text(d.val.toFixed(3) + " " + dotType + " | " + d.colorword + " · " + d.glossword + " · " + d.textureword + " · " + d.weightword + " · " + d.year )
 
   }
 
@@ -441,10 +443,11 @@ class Panels extends Component {
       .enter()
       .append('circle')
       .attr('class', 'colorPoint')
+      .attr('id', d => '_' + d.pm + '_colorPoint')
       .attr('stroke','none')
       .attr('fill','rgba(255,255,255,0.25)')
       .attr('cx', d => this.jitter(d.x)  )
-      .attr('cy', d => this.glyphOrigin(d.y) + this.colorScale(d) )
+      .attr('cy', d => this.glyphOrigin(d.y) - this.colorScale(d) )
       .attr('r', dotSize)
       .on('mouseover', this.dotMouseover)
       .on('mouseout', this.dotMouseout)
@@ -460,10 +463,11 @@ class Panels extends Component {
       .enter()
       .append('circle')
       .attr('class', 'texturePoint')
+      .attr('id', d => '_' + d.pm + '_texturePoint')
       .attr('stroke','none')
       .attr('fill','rgba(255,255,255,0.25)')
       .attr('cx', d => this.jitter(d.x) )
-      .attr('cy', d => this.glyphOrigin(d.y) - this.textureScale(d) )
+      .attr('cy', d => this.glyphOrigin(d.y) + this.textureScale(d) )
       .attr('r', dotSize)
       .on('mouseover', this.dotMouseover)
       .on('mouseout', this.dotMouseout)
@@ -479,6 +483,7 @@ class Panels extends Component {
       .enter()
       .append('circle')
       .attr('class', 'thicknessPoint')
+      .attr('id', d => '_' + d.pm + '_thicknessPoint')
       .attr('stroke','none')
       .attr('fill','rgba(255,255,255,0.25)')
       .attr('cx', d => this.glyphOrigin(d.x) - this.thicknessScale(d) )
@@ -498,6 +503,7 @@ class Panels extends Component {
       .enter()
       .append('circle')
       .attr('class', 'glossPoint')
+      .attr('id', d => '_' + d.pm + '_glossPoint')
       .attr('stroke','none')
       .attr('fill','rgba(255,255,255,0.25)')
       .attr('cx', d => this.glyphOrigin(d.x) + this.glossScale(d) )
@@ -617,7 +623,7 @@ class Panels extends Component {
       .data(colorPoints)
       .transition(transitionSettings)
         .attr('cx', d => this.jitter(d.x) )
-        .attr('cy', d => this.glyphOrigin(d.y) + this.colorScale(d) )
+        .attr('cy', d => this.glyphOrigin(d.y) - this.colorScale(d) )
 
     let texturePoints = this.props.data.filter(d => d.texture !== "");
     texturePoints = texturePoints.map(d => d.texture);
@@ -629,7 +635,7 @@ class Panels extends Component {
       .data(texturePoints)
       .transition(transitionSettings)
         .attr('cx', d => this.jitter(d.x) )
-        .attr('cy', d => this.glyphOrigin(d.y) - this.textureScale(d) )
+        .attr('cy', d => this.glyphOrigin(d.y) + this.textureScale(d) )
 
     let thicknessPoints = this.props.data.filter(d => d.thickness !== "");
     thicknessPoints = thicknessPoints.map(d => d.thickness);
