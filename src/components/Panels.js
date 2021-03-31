@@ -7,6 +7,8 @@ import flattenDeep from 'lodash/flattenDeep';
 
 const tduration = 1200;
 const highlightColor = 'rgba(114,229,239,0.8)';
+const circleColor = 'rgba(255,255,255,0.25)';
+const circleHighlight = 'rgba(239,177,155,0.25)'
 
 const innerW = window.innerWidth
 console.log(window.innerWidth);
@@ -93,6 +95,8 @@ class Panels extends Component {
     this.drawSVG = this.drawSVG.bind(this);
     this.drawIcons = this.drawIcons.bind(this);
     this.moveIcons = this.moveIcons.bind(this);
+    this.highlightIcons = this.highlightIcons.bind(this);
+    this.highlightFill = this.highlightFill.bind(this);
     this.drawMentions = this.drawMentions.bind(this);
     this.scrollToActive = this.scrollToActive.bind(this);
     this.mentionBoxMouseover = this.mentionBoxMouseover.bind(this);
@@ -137,6 +141,14 @@ class Panels extends Component {
 
     if (prevProps.jitter !== this.props.jitter) {
       this.moveIcons();
+    }
+
+    if (prevProps.designationHighlight !== this.props.designationHighlight) {
+      this.highlightIcons();
+    }
+
+    if (prevProps.designationString !== this.props.designationString) {
+      this.highlightIcons();
     }
   }
 
@@ -445,7 +457,7 @@ class Panels extends Component {
       .attr('class', 'colorPoint')
       .attr('id', d => '_' + d.pm + '_colorPoint')
       .attr('stroke','none')
-      .attr('fill','rgba(255,255,255,0.25)')
+      .attr('fill', circleColor)
       .attr('cx', d => this.jitter(d.x)  )
       .attr('cy', d => this.glyphOrigin(d.y) - this.colorScale(d) )
       .attr('r', dotSize)
@@ -465,7 +477,7 @@ class Panels extends Component {
       .attr('class', 'texturePoint')
       .attr('id', d => '_' + d.pm + '_texturePoint')
       .attr('stroke','none')
-      .attr('fill','rgba(255,255,255,0.25)')
+      .attr('fill', circleColor)
       .attr('cx', d => this.jitter(d.x) )
       .attr('cy', d => this.glyphOrigin(d.y) + this.textureScale(d) )
       .attr('r', dotSize)
@@ -485,7 +497,7 @@ class Panels extends Component {
       .attr('class', 'thicknessPoint')
       .attr('id', d => '_' + d.pm + '_thicknessPoint')
       .attr('stroke','none')
-      .attr('fill','rgba(255,255,255,0.25)')
+      .attr('fill', circleColor)
       .attr('cx', d => this.glyphOrigin(d.x) - this.thicknessScale(d) )
       .attr('cy', d => this.jitter(d.y) )
       .attr('r', dotSize)
@@ -505,7 +517,7 @@ class Panels extends Component {
       .attr('class', 'glossPoint')
       .attr('id', d => '_' + d.pm + '_glossPoint')
       .attr('stroke','none')
-      .attr('fill','rgba(255,255,255,0.25)')
+      .attr('fill', circleColor)
       .attr('cx', d => this.glyphOrigin(d.x) + this.glossScale(d) )
       .attr('cy', d => this.jitter(d.y) )
       .attr('r', dotSize)
@@ -661,6 +673,64 @@ class Panels extends Component {
       .transition(transitionSettings)
         .attr('cx', d => this.glyphOrigin(d.x) + this.glossScale(d) )
         .attr('cy', d => this.jitter(d.y) )
+
+  }
+
+  highlightFill(d) {
+    if (this.props.designationHighlight===false) {
+      return circleColor
+    } else if (this.props.designationHighlight==true) {
+      if (d.colorword===this.props.designationString || d.glossword===this.props.designationString || d.textureword===this.props.designationString || d.weightword===this.props.designationString ) {
+        return circleHighlight
+      } else {
+        return circleColor
+      }
+    }
+  }
+
+  highlightIcons() {
+
+    const svgNode = this.svgNode.current;
+
+    let colorPoints = this.props.data.filter(d => d.color !== "");
+    colorPoints = colorPoints.map(d => d.color);
+    colorPoints = flattenDeep(colorPoints);
+
+    select(svgNode)
+      .select('g.plotCanvas')
+      .selectAll('circle.colorPoint')
+      .data(colorPoints)
+      .attr('fill', d => this.highlightFill(d) )
+
+    let texturePoints = this.props.data.filter(d => d.texture !== "");
+    texturePoints = texturePoints.map(d => d.texture);
+    texturePoints = flattenDeep(texturePoints);
+
+    select(svgNode)
+      .select('g.plotCanvas')
+      .selectAll('circle.texturePoint')
+      .data(texturePoints)
+      .attr('fill', d => this.highlightFill(d) )
+
+    let thicknessPoints = this.props.data.filter(d => d.thickness !== "");
+    thicknessPoints = thicknessPoints.map(d => d.thickness);
+    thicknessPoints = flattenDeep(thicknessPoints);
+
+    select(svgNode)
+      .select('g.plotCanvas')
+      .selectAll('circle.thicknessPoint')
+      .data(thicknessPoints)
+      .attr('fill', d => this.highlightFill(d) )
+
+    let glossPoints = this.props.data.filter(d => d.gloss !== "");
+    glossPoints = glossPoints.map(d => d.gloss);
+    glossPoints = flattenDeep(glossPoints);
+
+    select(svgNode)
+      .select('g.plotCanvas')
+      .selectAll('circle.glossPoint')
+      .data(glossPoints)
+      .attr('fill', d => this.highlightFill(d) )
 
   }
 

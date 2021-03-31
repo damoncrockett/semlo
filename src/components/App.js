@@ -16,10 +16,16 @@ class App extends Component {
       linear: true,
       quantile: false,
       dotScale: 'linear',
-      jitter: false
+      jitter: false,
+      designations: [''], // a hack to get around rendering with null value
+      designationString: 'White',
+      designationHighlight: false
     };
 
     this.getData = this.getData.bind(this);
+    this.getDesignations = this.getDesignations.bind(this);
+    this.handleDesignationHighlight = this.handleDesignationHighlight.bind(this);
+    this.handleDesignationString = this.handleDesignationString.bind(this);
     this.handleSortVar = this.handleSortVar.bind(this);
     this.handleSortOrder = this.handleSortOrder.bind(this);
     this.handlePhenomeUni = this.handlePhenomeUni.bind(this);
@@ -35,6 +41,25 @@ class App extends Component {
       .then(response => response.json())
       .then(data => this.setState({ data: data }))
     }
+
+  getDesignations() {
+  fetch('__designations.json')
+    .then(response => response.json())
+    .then(data => this.setState({
+      designations: data
+    }));
+  }
+
+  // need functional setState here because new state depends on old
+  handleDesignationHighlight() {
+    this.setState(state => ({
+      designationHighlight: !this.state.designationHighlight
+    }));
+  }
+
+  handleDesignationString(e) {
+    this.setState({ designationString: e.target.value });
+  }
 
   handleSortVar(e) {
     const sortVar = e.target.value
@@ -74,6 +99,7 @@ class App extends Component {
 
   componentDidMount() {
     this.getData();
+    this.getDesignations();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -93,6 +119,11 @@ class App extends Component {
     const selectStyle = {
       backgroundColor: bkgd,
       color: stroke
+    };
+
+    const designationHighlightStyle = {
+      backgroundColor: this.state.designationHighlight ? stroke : bkgd,
+      color: this.state.designationHighlight ? bkgd : stroke
     };
 
     const phenomeStyle = {
@@ -120,6 +151,8 @@ class App extends Component {
       color: this.state.jitter ? bkgd : stroke
     };
 
+    const designations = this.state.designations;
+
     return (
       <div className='app'>
         <div className='field'>
@@ -128,6 +161,8 @@ class App extends Component {
             universe={this.state.universe}
             dotScale={this.state.dotScale}
             jitter={this.state.jitter}
+            designationString={this.state.designationString}
+            designationHighlight={this.state.designationHighlight}
           />
         </div>
         <div className='controlPanel'>
@@ -144,6 +179,7 @@ class App extends Component {
               <input type="radio" value="a" name="Sort Order" checked={this.state.sortOrder==='a'}/> ascending
               <input type="radio" value="d" name="Sort Order" checked={this.state.sortOrder==='d'}/> descending
             </div>
+          </div>
           <div className='buttonStrip'>
             <button onClick={this.handleSemLoUni} style={semloStyle}>LOCAL</button>
             <button onClick={this.handlePhenomeUni} style={phenomeStyle}>UNIVERSAL</button>
@@ -155,6 +191,11 @@ class App extends Component {
           <div className='buttonStrip'>
             <button onClick={this.handleJitter} style={jitterStyle}>JITTER</button>
           </div>
+          <div className='buttonStrip'>
+            <select style={selectStyle} value={this.state.designationString} onChange={this.handleDesignationString}>
+              {designations.map( (d, i) => {return <option value={d.word} key={i}>{d.word + ' ' + d.freq}</option>} )}
+            </select>
+            <button onClick={this.handleDesignationHighlight} style={designationHighlightStyle}>HIGHLIGHT</button>
           </div>
         </div>
       </div>
