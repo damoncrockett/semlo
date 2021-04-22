@@ -19,7 +19,8 @@ class App extends Component {
       jitter: false,
       designations: [''], // a hack to get around rendering with null value
       designationString: 'White',
-      designationHighlight: false
+      designationHighlight: false,
+      multiclick: false
     };
 
     this.getData = this.getData.bind(this);
@@ -33,17 +34,19 @@ class App extends Component {
     this.handleLinear = this.handleLinear.bind(this);
     this.handleQuantile = this.handleQuantile.bind(this);
     this.handleJitter = this.handleJitter.bind(this);
+    this.handleMulticlick = this.handleMulticlick.bind(this);
   }
 
   getData() {
-    //fetch('http://localhost:8888/_'+this.state.sortVar+'_'+this.state.sortOrder+'.json')
-    fetch('_'+this.state.sortVar+'_'+this.state.sortOrder+'.json')
+    fetch('http://localhost:8888/_'+this.state.sortVar+'_'+this.state.sortOrder+'.json')
+    //fetch('_'+this.state.sortVar+'_'+this.state.sortOrder+'.json')
       .then(response => response.json())
       .then(data => this.setState({ data: data }))
     }
 
   getDesignations() {
-  fetch('__designations.json')
+  fetch('http://localhost:8888/__designations.json')
+  //fetch('__designations.json')
     .then(response => response.json())
     .then(data => this.setState({
       designations: data
@@ -94,6 +97,12 @@ class App extends Component {
   handleJitter() {
     this.setState(state => ({
       jitter: !this.state.jitter
+    }));
+  }
+
+  handleMulticlick() {
+    this.setState(state => ({
+      multiclick: !this.state.multiclick
     }));
   }
 
@@ -151,6 +160,11 @@ class App extends Component {
       color: this.state.jitter ? bkgd : stroke
     };
 
+    const multiclickStyle = {
+      backgroundColor: this.state.multiclick ? stroke : bkgd,
+      color: this.state.multiclick ? bkgd : stroke
+    };
+
     const designations = this.state.designations;
 
     return (
@@ -163,6 +177,7 @@ class App extends Component {
             jitter={this.state.jitter}
             designationString={this.state.designationString}
             designationHighlight={this.state.designationHighlight}
+            multiclick={this.state.multiclick}
           />
         </div>
         <div className='controlPanel'>
@@ -196,6 +211,9 @@ class App extends Component {
               {designations.map( (d, i) => {return <option value={d.word} key={i}>{d.word + ' ' + d.freq}</option>} )}
             </select>
             <button onClick={this.handleDesignationHighlight} style={designationHighlightStyle}>HIGHLIGHT</button>
+          </div>
+          <div className='buttonStrip'>
+            <button onClick={this.handleMulticlick} style={multiclickStyle}>MULTICLICK</button>
           </div>
         </div>
       </div>

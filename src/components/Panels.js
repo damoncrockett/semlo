@@ -89,7 +89,8 @@ class Panels extends Component {
     super(props);
 
     this.state = {
-      clickID: null
+      clickID: null,
+      clickIDs: [] // push to this array whatever is clicked
     }
 
     this.drawSVG = this.drawSVG.bind(this);
@@ -98,9 +99,6 @@ class Panels extends Component {
     this.highlightIcons = this.highlightIcons.bind(this);
     this.highlightFill = this.highlightFill.bind(this);
     this.drawMentions = this.drawMentions.bind(this);
-    this.scrollToActive = this.scrollToActive.bind(this);
-    this.mentionBoxMouseover = this.mentionBoxMouseover.bind(this);
-    this.mentionBoxMouseout = this.mentionBoxMouseout.bind(this);
     this.handleMouseover = this.handleMouseover.bind(this);
     this.handleMouseout = this.handleMouseout.bind(this);
     this.dotMouseover = this.dotMouseover.bind(this);
@@ -295,7 +293,7 @@ class Panels extends Component {
       }
     } else if (this.props.universe==='phenome') {
       if (this.props.dotScale==='linear') {
-        return pGlossScale(d.valval)
+        return pGlossScale(d.val)
       } else if (this.props.dotScale==='quantile') {
         return pGlossScaleQ(d.valqp)
       }
@@ -740,63 +738,98 @@ class Panels extends Component {
     return "<b><i>"+l[0]+" "+l[1]+"</b></i>"+" "+l.slice(2).join(" ")
   }
 
-  scrollToActive() {
-    const x = select('#t' + this.state.clickID + '_rect').attr('x');
-    const y = select('#t' + this.state.clickID + '_rect').attr('y');
-    window.scrollTo(x,y);
-  }
-
-  // because pure html, cannot use 'attr'
-  mentionBoxMouseover(e, d) {
-    select('#activeGlyph')
-      //.style('color', 'white')
-      .style('border-color', 'white')
-    }
-
-  // because pure html, cannot use 'attr'
-  mentionBoxMouseout(e, d) {
-    select('#activeGlyph')
-      //.style('color', '#424242')
-      .style('border-color', '#424242')
-    }
-
   drawMentions(e, d) {
-    // removes previous mention box
-    select('div.controlPanel')
-      .select('#activeGlyph')
-      .remove()
 
-    // mention box
-    select('div.controlPanel')
-      .append('p')
-      .attr('class', 'activeGlyph')
-      .attr('id', 'activeGlyph')
-      .text(d.Manufacturer + " " + d.Brand + " " + d.surfaceLetter )
-      .on('mouseover', this.mentionBoxMouseover)
-      .on('mouseout', this.mentionBoxMouseout)
-      .on('click', this.scrollToActive)
+    if ( this.props.multiclick===false ) {
 
-    select('#t' + this.state.clickID + '_rect')
-      .attr('fill', d => pstatusColors[d.pstatus])
+      // removes everything in the text panel
+      select('div.textPanel')
+        .selectAll('p')
+        .remove()
 
-    this.setState({ clickID: d.idx }, function () {
+      // set previously highlighted rect back to normal color
       select('#t' + this.state.clickID + '_rect')
-        .attr('fill', highlightColor)
-    })
+        .attr('fill', d => pstatusColors[d.pstatus])
 
-    // removes previous mentions if any
-    select('div.textPanel')
-      .selectAll('div')
-      .remove()
+      // setting state and new highlight rect
+      this.setState({ clickID: d.idx }, function () {
+        select('#t' + this.state.clickID + '_rect')
+          .attr('fill', highlightColor)
+      })
 
-    // Is there a cleaner way?
-    select('div.textPanel')
-      .selectAll('div')
-      .data(d['mentions'])
-      .enter()
-      .append('div')
-      .html(d => "<a href=" + d.imgurl +" target='_blank' rel='noopener noreferrer'" +  ">" + "<p>" + "“" + d.words + "”" + "<br/><br/>" + this.formatCitation(d.citation) + "</p></a>")
+      // mention box
+      select('div.textPanel')
+        .append('p')
+        .attr('class', 'activeGlyph')
+        .attr('id', 't' + d.idx + '_activeGlyph')
+        .text(d.Manufacturer + " " + d.Brand + " " + d.surfaceLetter )
+        .on('click', function() {
+          const x = select('#t' + d.idx + '_rect').attr('x');
+          const y = select('#t' + d.idx + '_rect').attr('y');
+          window.scrollTo(x,y);
+        })
+
+      // drawing the mentions themselves
+      select('div.textPanel')
+        .select('#t' + d.idx + '_activeGlyph')
+        .selectAll('div')
+        .data(d['mentions'])
+        .enter()
+        .append('div')
+        .html(d => "<a href=" + d.imgurl +" target='_blank' rel='noopener noreferrer'" +  ">" + "<p>" + "“" + d.words + "”" + "<br/><br/>" + this.formatCitation(d.citation) + "</p></a>")
+
+    } else if ( this.props.multiclick===true ) {
+
+        // adding current single-click ID to clickIDs
+        this.setState(state => ({
+          clickIDs: [...this.state.clickIDs, this.state.clickID]
+        }))
+
+        if ( this.state.clickIDs.includes(d.idx) ) {
+          select('#t' + d.idx + '_rect')
+            .attr('fill', d => pstatusColors[d.pstatus])
+
+          select('div.textPanel')
+            .select('#t' + d.idx + '_activeGlyph')
+            .remove()
+
+          this.setState(state => ({
+            clickIDs: this.state.clickIDs.filter(item => item !== d.idx)
+          }))
+
+        } else {
+
+            this.setState(state => ({
+              clickIDs: [...this.state.clickIDs, d.idx]
+            }))
+
+            select('#t' + d.idx + '_rect')
+              .attr('fill', highlightColor)
+
+            // mention box
+            select('div.textPanel')
+              .append('p')
+              .attr('class', 'activeGlyph')
+              .attr('id', 't' + d.idx + '_activeGlyph')
+              .text(d.Manufacturer + " " + d.Brand + " " + d.surfaceLetter )
+              .on('click', function() {
+                const x = select('#t' + d.idx + '_rect').attr('x');
+                const y = select('#t' + d.idx + '_rect').attr('y');
+                window.scrollTo(x,y);
+              })
+
+            // drawing the mentions themselves
+            select('div.textPanel')
+              .select('#t' + d.idx + '_activeGlyph')
+              .selectAll('div')
+              .data(d['mentions'])
+              .enter()
+              .append('div')
+              .html(d => "<a href=" + d.imgurl +" target='_blank' rel='noopener noreferrer'" +  ">" + "<p>" + "“" + d.words + "”" + "<br/><br/>" + this.formatCitation(d.citation) + "</p></a>")
+
+        }
     }
+  }
 
   // note: 'e' here is the mouse event itself, which we don't need
   handleMouseover(e, d) {

@@ -25,13 +25,11 @@ g {
 }
 
 p {
-  background-color: rgba(242,241,239,0.8);
+  background-color: rgba(242,241,239,0.67);
   color: var(--panel-stroke);
   font-family: 'Open Sans';
   align: left;
-  width: 30vw;
   padding: 8px;
-  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
 
 p:hover {
@@ -82,10 +80,6 @@ p:hover {
 
 
 p.activeGlyph {
-  position: fixed;
-  top: 6vw;
-  left: 1vw;
-	border-radius: 10px;
 	border-color: var(--panel-stroke);
 	border-width: 1px;
 	border-style: solid;
@@ -93,17 +87,20 @@ p.activeGlyph {
   font-family: 'Roboto';
   font-weight: bold;
   align: left;
-  width: 10vw;
+  width: 30vw;
   padding: 8px;
   box-shadow: none;
+  background-color: var(--panel-background);
+}
+
+p.activeGlyph:hover {
   background-color: rgba(114,229,239,0.8);
 }
 
 p.detail {
   position: fixed;
-  top: 9vw;
+  top: 5vw;
   left: 1vw;
-
 	border-radius: 10px;
 	border-color: var(--panel-stroke);
 	border-width: 1px;
@@ -111,10 +108,10 @@ p.detail {
   color: var(--panel-stroke);
   font-family: 'Roboto';
   align: left;
-  width: 10vw;
+  width: 30vw;
   padding: 8px;
   box-shadow: none;
-  background-color: var(--panel-background);
+  background-color: #fe815e;
 }
 
 .buttonStrip {
