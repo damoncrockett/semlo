@@ -89,7 +89,6 @@ class Panels extends Component {
     super(props);
 
     this.state = {
-      clickID: null,
       clickIDs: [] // push to this array whatever is clicked
     }
 
@@ -747,15 +746,18 @@ class Panels extends Component {
         .selectAll('p')
         .remove()
 
-      // set previously highlighted rect back to normal color
-      select('#t' + this.state.clickID + '_rect')
-        .attr('fill', d => pstatusColors[d.pstatus])
+      // set clickIDs rects back to normal color
+      this.state.clickIDs.forEach((item, i) => {
+        select('#t' + item + '_rect')
+          .attr('fill', d => pstatusColors[d.pstatus])
+      });
 
-      // setting state and new highlight rect
-      this.setState({ clickID: d.idx }, function () {
-        select('#t' + this.state.clickID + '_rect')
-          .attr('fill', highlightColor)
-      })
+      // reset clickIDs to be only this idx
+      this.setState({ clickIDs: [d.idx] })
+
+      // highlight the rect we are clicking
+      select('#t' + d.idx + '_rect')
+        .attr('fill', highlightColor)
 
       // mention box
       select('div.textPanel')
@@ -780,11 +782,7 @@ class Panels extends Component {
 
     } else if ( this.props.multiclick===true ) {
 
-        // adding current single-click ID to clickIDs
-        this.setState(state => ({
-          clickIDs: [...this.state.clickIDs, this.state.clickID]
-        }))
-
+        // if the idx of the rect you're clicking is already clicked, un-click it
         if ( this.state.clickIDs.includes(d.idx) ) {
           select('#t' + d.idx + '_rect')
             .attr('fill', d => pstatusColors[d.pstatus])
@@ -793,11 +791,12 @@ class Panels extends Component {
             .select('#t' + d.idx + '_activeGlyph')
             .remove()
 
+          // we remove this d.idx from clickIDs list
           this.setState(state => ({
             clickIDs: this.state.clickIDs.filter(item => item !== d.idx)
           }))
 
-        } else {
+        } else { // if it's not clicked, click it
 
             this.setState(state => ({
               clickIDs: [...this.state.clickIDs, d.idx]
