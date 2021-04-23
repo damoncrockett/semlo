@@ -146,6 +146,38 @@ select, select:focus, select:active {
   outline: none;
 }
 
+.searchField {
+  font-family: 'Roboto';
+  border-color: var(--panel-stroke);
+  border-radius: 5px;
+  padding: 2px;
+  margin-left: 2px;
+  margin-right: 2px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  outline: none;
+}
+
+.searchSubmit {
+  font-family: 'Roboto';
+  border-color: var(--panel-stroke);
+  border-radius: 10px;
+  border-width: 1px;
+  border-style: solid;
+  padding: 6px;
+  margin-left: 2px;
+  margin-right: 2px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  outline: none;
+  background-color: var(--panel-background)
+}
+
+.searchSubmit:hover {
+  border-color: #ffffff;
+  color: #ffffff !important;
+}
+
 .radSwitch {
   font-family: 'Roboto';
   border-color: var(--panel-stroke);

@@ -18,13 +18,17 @@ class App extends Component {
       dotScale: 'linear',
       jitter: false,
       designations: [''], // a hack to get around rendering with null value
+      mentionsAsUnits: [''], // a hack to get around rendering with null value
       designationString: 'White',
       designationHighlight: false,
-      multiclick: false
+      multiclick: false,
+      searchTerm: '',
+      submittedSearch: ''
     };
 
     this.getData = this.getData.bind(this);
     this.getDesignations = this.getDesignations.bind(this);
+    this.getMentionsAsUnits = this.getMentionsAsUnits.bind(this);
     this.handleDesignationHighlight = this.handleDesignationHighlight.bind(this);
     this.handleDesignationString = this.handleDesignationString.bind(this);
     this.handleSortVar = this.handleSortVar.bind(this);
@@ -35,6 +39,8 @@ class App extends Component {
     this.handleQuantile = this.handleQuantile.bind(this);
     this.handleJitter = this.handleJitter.bind(this);
     this.handleMulticlick = this.handleMulticlick.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
+    this.submitSearch = this.submitSearch.bind(this);
   }
 
   getData() {
@@ -45,12 +51,21 @@ class App extends Component {
     }
 
   getDesignations() {
-  fetch('http://localhost:8888/__designations.json')
-  //fetch('__designations.json')
-    .then(response => response.json())
-    .then(data => this.setState({
-      designations: data
-    }));
+    fetch('http://localhost:8888/__designations.json')
+    //fetch('__designations.json')
+      .then(response => response.json())
+      .then(data => this.setState({
+        designations: data
+      }));
+  }
+
+  getMentionsAsUnits() {
+    fetch('http://localhost:8888/__mentionsAsUnits.json')
+    //fetch('__designations.json')
+      .then(response => response.json())
+      .then(data => this.setState({
+        mentionsAsUnits: data
+      }));
   }
 
   // need functional setState here because new state depends on old
@@ -106,9 +121,22 @@ class App extends Component {
     }));
   }
 
+  handleSearch(event) {
+    this.setState({ searchTerm: event.target.value });
+  }
+
+  submitSearch(event) {
+    event.preventDefault();
+    this.setState({ submittedSearch: this.state.searchTerm });
+
+    // not strictly necessary, but nice for user to start in multiclick after searching
+    this.setState({ multiclick: true });
+  }
+
   componentDidMount() {
     this.getData();
     this.getDesignations();
+    this.getMentionsAsUnits();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -178,6 +206,8 @@ class App extends Component {
             designationString={this.state.designationString}
             designationHighlight={this.state.designationHighlight}
             multiclick={this.state.multiclick}
+            submittedSearch={this.state.submittedSearch}
+            mentionsAsUnits={this.state.mentionsAsUnits}
           />
         </div>
         <div className='controlPanel'>
@@ -214,6 +244,12 @@ class App extends Component {
           </div>
           <div className='buttonStrip'>
             <button onClick={this.handleMulticlick} style={multiclickStyle}>MULTICLICK</button>
+          </div>
+          <div className='buttonStrip'>
+            <form onSubmit={this.submitSearch}>
+             <input type="text" value={this.state.searchTerm} onChange={this.handleSearch} className="searchField"/>
+             <input type="submit" value="SEARCH" className="searchSubmit"/>
+            </form>
           </div>
         </div>
       </div>

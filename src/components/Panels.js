@@ -4,6 +4,7 @@ import { transition } from 'd3-transition';
 import { scaleLinear, scaleQuantile } from 'd3-scale';
 import { ticks } from 'd3-array'
 import flattenDeep from 'lodash/flattenDeep';
+import { uniq } from 'lodash';
 
 const tduration = 1200;
 const highlightColor = 'rgba(114,229,239,0.8)';
@@ -110,6 +111,7 @@ class Panels extends Component {
     this.thicknessScale = this.thicknessScale.bind(this);
     this.glossScale = this.glossScale.bind(this);
     this.jitter = this.jitter.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
     //this.polygonPoints = this.polygonPoints.bind(this);
     this.svgNode = React.createRef();
   }
@@ -146,6 +148,10 @@ class Panels extends Component {
 
     if (prevProps.designationString !== this.props.designationString) {
       this.highlightIcons();
+    }
+
+    if (prevProps.submittedSearch !== this.props.submittedSearch) {
+      this.handleSearch();
     }
   }
 
@@ -737,7 +743,60 @@ class Panels extends Component {
     return "<b><i>"+l[0]+" "+l[1]+"</b></i>"+" "+l.slice(2).join(" ")
   }
 
+  handleSearch() {
+    // removes everything in the text panel
+    select('div.textPanel')
+      .selectAll('p')
+      .remove()
+
+    const clickedData = this.props.data.filter(d => this.state.clickIDs.includes(d.idx));
+
+    // resets clicked (highlighted) rects to normal color
+    clickedData.forEach((item, i) => {
+      select('#t' + item.idx + '_rect')
+        .attr('fill', pstatusColors[item.pstatus])
+    });
+
+    // actual text search
+    const searchedMentions = this.props.mentionsAsUnits.filter(d => d.words.includes(this.props.submittedSearch));
+    const searchIDs = uniq(searchedMentions.map(d => d.idx));
+
+    // reset clickIDs to the unique idxs in the search results
+    this.setState({ clickIDs: searchIDs })
+
+    // filter main data file by searchIDs
+    const searchedData = this.props.data.filter(d => searchIDs.includes(d.idx));
+
+    // highlight the rects and draw the activeGlyphs
+    searchedData.forEach((item, i) => {
+      select('#t' + item.idx + '_rect')
+        .attr('fill', highlightColor)
+
+      // mention box
+      select('div.textPanel')
+        .append('p')
+        .attr('class', 'activeGlyph')
+        .attr('id', 't' + item.idx + '_activeGlyph')
+        .text(item.Manufacturer + " " + item.Brand + " " + item.surfaceLetter )
+        .on('click', function() {
+          const x = select('#t' + item.idx + '_rect').attr('x');
+          const y = select('#t' + item.idx + '_rect').attr('y');
+          window.scrollTo(x,y);
+        })
+
+      select('div.textPanel')
+        .select('#t' + item.idx + '_activeGlyph')
+        .selectAll('div')
+        .data(searchedMentions.filter(d => d.idx === item.idx))
+        .enter()
+        .append('div')
+        .html(d => "<a href=" + d.imgurl +" target='_blank' rel='noopener noreferrer'" +  ">" + "<p>" + "“" + d.words + "”" + "<br/><br/>" + this.formatCitation(d.citation) + "</p></a>")
+    });
+  }
+
   drawMentions(e, d) {
+
+    const clickedData = this.props.data.filter(d => this.state.clickIDs.includes(d.idx) );
 
     if ( this.props.multiclick===false ) {
 
@@ -746,10 +805,10 @@ class Panels extends Component {
         .selectAll('p')
         .remove()
 
-      // set clickIDs rects back to normal color
-      this.state.clickIDs.forEach((item, i) => {
-        select('#t' + item + '_rect')
-          .attr('fill', d => pstatusColors[d.pstatus])
+      // resets highlighted rect colors to normal
+      clickedData.forEach((item, i) => {
+        select('#t' + item.idx + '_rect')
+          .attr('fill', pstatusColors[item.pstatus])
       });
 
       // reset clickIDs to be only this idx
@@ -785,7 +844,7 @@ class Panels extends Component {
         // if the idx of the rect you're clicking is already clicked, un-click it
         if ( this.state.clickIDs.includes(d.idx) ) {
           select('#t' + d.idx + '_rect')
-            .attr('fill', d => pstatusColors[d.pstatus])
+            .attr('fill', pstatusColors[d.pstatus])
 
           select('div.textPanel')
             .select('#t' + d.idx + '_activeGlyph')
@@ -827,8 +886,8 @@ class Panels extends Component {
               .html(d => "<a href=" + d.imgurl +" target='_blank' rel='noopener noreferrer'" +  ">" + "<p>" + "“" + d.words + "”" + "<br/><br/>" + this.formatCitation(d.citation) + "</p></a>")
 
         }
+      }
     }
-  }
 
   // note: 'e' here is the mouse event itself, which we don't need
   handleMouseover(e, d) {
