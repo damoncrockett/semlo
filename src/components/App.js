@@ -61,7 +61,7 @@ class App extends Component {
 
   getMentionsAsUnits() {
     //fetch('http://localhost:8888/__mentionsAsUnits.json')
-    fetch('__designations.json')
+    fetch('__mentionsAsUnits.json')
       .then(response => response.json())
       .then(data => this.setState({
         mentionsAsUnits: data
