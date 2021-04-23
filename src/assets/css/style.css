@@ -150,6 +150,7 @@ select, select:focus, select:active {
   font-family: 'Roboto';
   border-color: var(--panel-stroke);
   border-radius: 5px;
+  border-width: 1px;
   padding: 2px;
   margin-left: 2px;
   margin-right: 2px;
