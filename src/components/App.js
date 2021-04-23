@@ -44,15 +44,15 @@ class App extends Component {
   }
 
   getData() {
-    fetch('http://localhost:8888/_'+this.state.sortVar+'_'+this.state.sortOrder+'.json')
-    //fetch('_'+this.state.sortVar+'_'+this.state.sortOrder+'.json')
+    //fetch('http://localhost:8888/_'+this.state.sortVar+'_'+this.state.sortOrder+'.json')
+    fetch('_'+this.state.sortVar+'_'+this.state.sortOrder+'.json')
       .then(response => response.json())
       .then(data => this.setState({ data: data }))
     }
 
   getDesignations() {
-    fetch('http://localhost:8888/__designations.json')
-    //fetch('__designations.json')
+    //fetch('http://localhost:8888/__designations.json')
+    fetch('__designations.json')
       .then(response => response.json())
       .then(data => this.setState({
         designations: data
@@ -60,8 +60,8 @@ class App extends Component {
   }
 
   getMentionsAsUnits() {
-    fetch('http://localhost:8888/__mentionsAsUnits.json')
-    //fetch('__designations.json')
+    //fetch('http://localhost:8888/__mentionsAsUnits.json')
+    fetch('__designations.json')
       .then(response => response.json())
       .then(data => this.setState({
         mentionsAsUnits: data
