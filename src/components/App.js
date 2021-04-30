@@ -214,11 +214,14 @@ class App extends Component {
           <div className='buttonStrip'>
             <select style={selectStyle} value={this.state.sortVar} onChange={this.handleSortVar}>
               <option value='idx'>Index</option>
-              <option value='mentionType'>Brand</option>
               <option value='numMentions'>Frequency</option>
-              <option value='pstatus'>Status</option>
-              <option value='surfaceBadge'>Surface Badge</option>
               <option value='surfaceName'>Surface Name</option>
+              <option value='meanThickness'>Average Thickness</option>
+              <option value='meanColor'>Average Color</option>
+              <option value='meanGloss'>Average Gloss</option>
+              <option value='meanTexture'>Average Texture</option>
+              <option value='expressiveness'>Expressiveness</option>
+
             </select>
             <div className='radSwitch' style={selectStyle} onChange={this.handleSortOrder}>
               <input type="radio" value="a" name="Sort Order" checked={this.state.sortOrder==='a'}/> ascending

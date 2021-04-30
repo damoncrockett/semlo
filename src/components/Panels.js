@@ -9,7 +9,9 @@ import { uniq } from 'lodash';
 const tduration = 1200;
 const highlightColor = 'rgba(114,229,239,0.8)';
 const circleColor = 'rgba(255,255,255,0.25)';
-const circleHighlight = 'rgba(239,177,155,0.25)'
+const circleStroke = 'none';
+const circleHighlight = 'none';
+const circleHighlightStroke = 'rgba(254, 129, 94, 1.0)';
 
 const innerW = window.innerWidth
 console.log(window.innerWidth);
@@ -28,10 +30,11 @@ const rectW = innerW * 0.65 / 5 - pad;
 const rectH = rectW;
 
 const plotW = (rectW + pad) * 5;
-const plotH = (rectW + pad) * 30;
+//const plotH = (rectW + pad) * 30;
+const plotH = (rectW + pad) * 6;
 const svgW = plotW + margin.left + margin.right;
 const svgH = plotH + margin.top + margin.bottom;
-const dotSize = 6;
+const dotSize = 7;
 
 const pstatusColors = {
   'notp': 'rgba(242,241,239,0.8)', //off white
@@ -56,13 +59,17 @@ const pThicknessMin = 0.062375;
 const pGlossMax = 141.71197509765625;
 const pGlossMin = 0.28917333483695984;
 
-const sColorMax = 18.41;
+// SemLo universe after 1945-1965 filtering
+//const sColorMax = 18.41;
+const sColorMax = 15.45;
 const sColorMin = -1.69;
-const sTextureMax = 15.103586592116208;
+//const sTextureMax = 15.103586592116208;
+const sTextureMax = 9.171872622172028;
 const sTextureMin = -3.8666978117214135;
 const sThicknessMax = 0.459375;
 const sThicknessMin = 0.13044444444444445;
-const sGlossMax = 141.71197509765625;
+//const sGlossMax = 141.71197509765625;
+const sGlossMax = 114.32791137695312;
 const sGlossMin = 0.5542057752609253;
 
 const pColorScale = scaleLinear().domain([pColorMin,pColorMax]).range([0,rectW * 0.3]);
@@ -98,6 +105,7 @@ class Panels extends Component {
     this.moveIcons = this.moveIcons.bind(this);
     this.highlightIcons = this.highlightIcons.bind(this);
     this.highlightFill = this.highlightFill.bind(this);
+    this.highlightStroke = this.highlightStroke.bind(this);
     this.drawMentions = this.drawMentions.bind(this);
     this.handleMouseover = this.handleMouseover.bind(this);
     this.handleMouseout = this.handleMouseout.bind(this);
@@ -388,6 +396,7 @@ class Panels extends Component {
       .text(d => d.surfaceLetter)
       .attr('fill', d => pstatusTextColors[d.pstatus])
 
+/*
     select(svgNode)
       .select('g.plotCanvas')
       .selectAll('text.badge')
@@ -402,7 +411,7 @@ class Panels extends Component {
       .attr('fill', d => pstatusTextColors[d.pstatus])
       .attr('font-weight', 'bold')
       .attr('font-size', '36px')
-
+*/
     select(svgNode)
       .select('g.plotCanvas')
       .selectAll('text.freqticks')
@@ -580,7 +589,7 @@ class Panels extends Component {
       .transition(transitionSettings)
         .attr('x', d => this.zeroPoint(d.x) + rectW * 0.04 )
         .attr('y', d => this.zeroPoint(d.y) + rectW * 0.27 )
-
+/*
     select(svgNode)
       .select('g.plotCanvas')
       .selectAll('text.badge')
@@ -588,7 +597,7 @@ class Panels extends Component {
       .transition(transitionSettings)
         .attr('x', d => this.zeroPoint(d.x) + rectW * 0.82 )
         .attr('y', d => this.zeroPoint(d.y) + rectW * 0.2 )
-
+*/
     select(svgNode)
       .select('g.plotCanvas')
       .selectAll('text.freqticks')
@@ -691,6 +700,18 @@ class Panels extends Component {
     }
   }
 
+  highlightStroke(d) {
+    if (this.props.designationHighlight===false) {
+      return circleStroke
+    } else if (this.props.designationHighlight==true) {
+      if (d.colorword===this.props.designationString || d.glossword===this.props.designationString || d.textureword===this.props.designationString || d.weightword===this.props.designationString ) {
+        return circleHighlightStroke
+      } else {
+        return circleStroke
+      }
+    }
+  }
+
   highlightIcons() {
 
     const svgNode = this.svgNode.current;
@@ -704,6 +725,7 @@ class Panels extends Component {
       .selectAll('circle.colorPoint')
       .data(colorPoints)
       .attr('fill', d => this.highlightFill(d) )
+      .attr('stroke', d => this.highlightStroke(d) )
 
     let texturePoints = this.props.data.filter(d => d.texture !== "");
     texturePoints = texturePoints.map(d => d.texture);
@@ -714,6 +736,7 @@ class Panels extends Component {
       .selectAll('circle.texturePoint')
       .data(texturePoints)
       .attr('fill', d => this.highlightFill(d) )
+      .attr('stroke', d => this.highlightStroke(d) )
 
     let thicknessPoints = this.props.data.filter(d => d.thickness !== "");
     thicknessPoints = thicknessPoints.map(d => d.thickness);
@@ -724,6 +747,7 @@ class Panels extends Component {
       .selectAll('circle.thicknessPoint')
       .data(thicknessPoints)
       .attr('fill', d => this.highlightFill(d) )
+      .attr('stroke', d => this.highlightStroke(d) )
 
     let glossPoints = this.props.data.filter(d => d.gloss !== "");
     glossPoints = glossPoints.map(d => d.gloss);
@@ -734,6 +758,7 @@ class Panels extends Component {
       .selectAll('circle.glossPoint')
       .data(glossPoints)
       .attr('fill', d => this.highlightFill(d) )
+      .attr('stroke', d => this.highlightStroke(d) )
 
   }
 
