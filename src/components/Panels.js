@@ -783,7 +783,7 @@ class Panels extends Component {
     });
 
     // actual text search
-    const searchedMentions = this.props.mentionsAsUnits.filter(d => d.words.includes(this.props.submittedSearch));
+    const searchedMentions = this.props.mentionsAsUnits.filter(d => d.words.toLowerCase().includes(this.props.submittedSearch.toLowerCase()));
     const searchIDs = uniq(searchedMentions.map(d => d.idx));
 
     // reset clickIDs to the unique idxs in the search results
