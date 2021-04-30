@@ -31,7 +31,7 @@ const rectH = rectW;
 
 const plotW = (rectW + pad) * 5;
 //const plotH = (rectW + pad) * 30;
-const plotH = (rectW + pad) * 6;
+const plotH = (rectW + pad) * 7;
 const svgW = plotW + margin.left + margin.right;
 const svgH = plotH + margin.top + margin.bottom;
 const dotSize = 7;
